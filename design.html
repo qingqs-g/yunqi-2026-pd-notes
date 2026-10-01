@@ -1,0 +1,541 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>2026 云栖大会 · 设计观察｜从"做界面"到"编译意图"</title>
+<style>
+:root{
+  --orange:#ff6a00; --orange-soft:#fff1e6; --orange-deep:#d45500;
+  --teal:#0e7c7b; --teal-soft:#e6f4f3;
+  --ink:#1c1a17; --ink-2:#4a453e; --ink-3:#7a746b;
+  --paper:#faf8f5; --card:#ffffff; --line:#e8e2d9;
+  --dark:#141210; --dark-2:#221e1a;
+  --radius:16px;
+  --shadow:0 2px 6px rgba(28,26,23,.05),0 12px 32px rgba(28,26,23,.07);
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  font-family:"PingFang SC","Hiragino Sans GB","Microsoft YaHei",-apple-system,sans-serif;
+  background:var(--paper); color:var(--ink); line-height:1.85; font-size:16px;
+  -webkit-font-smoothing:antialiased;
+}
+.wrap{max-width:960px;margin:0 auto;padding:0 24px}
+
+/* ---------- HERO ---------- */
+.hero{position:relative;color:#fff;overflow:hidden;background:var(--dark)}
+.hero-img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:.9}
+.hero::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(20,18,16,.25) 0%,rgba(20,18,16,.55) 45%,rgba(20,18,16,.94) 100%)}
+.hero-inner{position:relative;z-index:2;padding:96px 24px 72px;max-width:960px;margin:0 auto}
+.hero-kicker{display:inline-flex;align-items:center;gap:8px;font-size:13px;letter-spacing:.18em;text-transform:uppercase;color:#ffb27a;font-weight:600;margin-bottom:20px}
+.hero-kicker::before{content:"";width:28px;height:2px;background:var(--orange)}
+.hero h1{font-size:clamp(34px,5.4vw,56px);line-height:1.2;font-weight:800;letter-spacing:.01em;margin-bottom:14px}
+.hero h1 em{font-style:normal;color:var(--orange)}
+.hero-sub{font-size:clamp(16px,2.2vw,20px);color:#e8e2da;font-weight:400;max-width:640px;margin-bottom:32px}
+.hero-meta{display:flex;flex-wrap:wrap;gap:10px}
+.chip{display:inline-flex;align-items:center;gap:6px;padding:7px 14px;border:1px solid rgba(255,255,255,.28);border-radius:999px;font-size:13px;color:#f0eae2;background:rgba(255,255,255,.07);backdrop-filter:blur(6px)}
+.chip b{color:var(--orange);font-weight:700}
+
+/* ---------- NAV ---------- */
+.nav{position:sticky;top:0;z-index:50;background:rgba(250,248,245,.92);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+.nav-in{max-width:960px;margin:0 auto;padding:0 24px;display:flex;gap:4px;overflow-x:auto;scrollbar-width:none}
+.nav-in::-webkit-scrollbar{display:none}
+.nav a{flex:0 0 auto;padding:14px 14px;font-size:14px;color:var(--ink-2);text-decoration:none;font-weight:500;border-bottom:2px solid transparent;white-space:nowrap}
+.nav a:hover{color:var(--orange)}
+.nav a.on{color:var(--orange);border-bottom-color:var(--orange);font-weight:700}
+
+/* ---------- SECTION ---------- */
+section{padding:64px 0}
+section+section{border-top:1px solid var(--line)}
+.sec-head{margin-bottom:36px}
+.sec-no{font-size:13px;font-weight:800;letter-spacing:.2em;color:var(--orange);margin-bottom:8px}
+.sec-head h2{font-size:clamp(24px,3.6vw,34px);font-weight:800;line-height:1.35;letter-spacing:.01em}
+.sec-head .sec-sub{margin-top:10px;color:var(--ink-3);font-size:15px;max-width:720px}
+.forum-tag{display:inline-flex;gap:8px;flex-wrap:wrap;margin-top:14px}
+.tag{font-size:12px;padding:4px 11px;border-radius:6px;background:var(--orange-soft);color:var(--orange-deep);font-weight:600}
+.tag.alt{background:var(--teal-soft);color:var(--teal)}
+.tag.gray{background:#efece6;color:var(--ink-3)}
+
+/* ---------- LEDE ---------- */
+.lede{background:var(--card);border:1px solid var(--line);border-left:4px solid var(--orange);border-radius:var(--radius);padding:26px 28px;box-shadow:var(--shadow)}
+.lede p{color:var(--ink-2);font-size:15.5px}
+.lede p+p{margin-top:12px}
+.lede .note{font-size:13px;color:var(--ink-3);margin-top:14px;padding-top:14px;border-top:1px dashed var(--line)}
+
+/* ---------- SIGNAL GRID ---------- */
+.signals{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:16px}
+.signal{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:22px;box-shadow:var(--shadow);position:relative;overflow:hidden;transition:transform .18s ease,box-shadow .18s ease}
+.signal:hover{transform:translateY(-3px);box-shadow:0 6px 14px rgba(28,26,23,.08),0 18px 40px rgba(28,26,23,.1)}
+.signal .no{position:absolute;top:14px;right:18px;font-size:34px;font-weight:800;color:#f0ebe3;line-height:1}
+.signal h3{font-size:16.5px;font-weight:700;margin-bottom:8px;padding-right:34px;line-height:1.5}
+.signal p{font-size:14px;color:var(--ink-2)}
+.signal .who{display:block;margin-top:10px;font-size:12.5px;color:var(--orange-deep);font-weight:600}
+
+/* ---------- SPEAKER ---------- */
+.person{display:flex;gap:16px;margin:34px 0 14px;align-items:flex-start}
+.avatar{flex:0 0 auto;width:46px;height:46px;border-radius:50%;background:linear-gradient(135deg,var(--orange),#ff9a4d);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:18px;box-shadow:0 4px 12px rgba(255,106,0,.3)}
+.avatar.t{background:linear-gradient(135deg,var(--teal),#3aa8a0);box-shadow:0 4px 12px rgba(14,124,123,.3)}
+.person-meta h3{font-size:18px;font-weight:800;line-height:1.4}
+.person-meta .role{font-size:13px;color:var(--ink-3);margin-top:2px}
+.body p{color:var(--ink-2);margin-bottom:14px}
+.body p strong{color:var(--ink)}
+.body .hl{background:linear-gradient(transparent 62%,#ffd9b8 62%);font-weight:700;color:var(--ink)}
+
+/* ---------- QUOTE ---------- */
+.quote{position:relative;background:var(--dark);color:#f4efe8;border-radius:var(--radius);padding:30px 32px 26px 60px;margin:22px 0;box-shadow:var(--shadow)}
+.quote::before{content:"\201C";position:absolute;left:20px;top:6px;font-size:64px;line-height:1;color:var(--orange);font-family:Georgia,serif}
+.quote p{font-size:17.5px;font-weight:600;line-height:1.75}
+.quote .q-by{margin-top:12px;font-size:13px;color:#b8b0a6}
+.quote .q-by b{color:var(--orange)}
+.quote.light{background:var(--orange-soft);color:var(--ink)}
+.quote.light::before{color:var(--orange)}
+.quote.light .q-by{color:var(--ink-3)}
+
+/* ---------- STAT ---------- */
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:14px;margin:22px 0}
+.stat{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:18px 16px;text-align:center;box-shadow:var(--shadow)}
+.stat .v{font-size:27px;font-weight:800;color:var(--orange);line-height:1.2;letter-spacing:-.01em}
+.stat .v small{font-size:15px;font-weight:700}
+.stat .k{font-size:12.5px;color:var(--ink-3);margin-top:6px;line-height:1.5}
+.stat.teal .v{color:var(--teal)}
+
+/* ---------- CARDS ---------- */
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px;margin:22px 0}
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:20px;box-shadow:var(--shadow)}
+.card h4{font-size:15.5px;font-weight:700;margin-bottom:8px;display:flex;align-items:center;gap:8px}
+.card h4 .dot{width:8px;height:8px;border-radius:50%;background:var(--orange);flex:0 0 auto}
+.card.t h4 .dot{background:var(--teal)}
+.card p,.card li{font-size:13.5px;color:var(--ink-2)}
+.card ul{padding-left:18px}
+.card li{margin-bottom:4px}
+
+/* ---------- DIAGRAM ---------- */
+.diagram{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:26px 22px;margin:24px 0;box-shadow:var(--shadow)}
+.diagram .dg-title{font-size:14px;font-weight:700;color:var(--ink);margin-bottom:4px;text-align:center}
+.diagram .dg-sub{font-size:12.5px;color:var(--ink-3);text-align:center;margin-bottom:18px}
+.diagram svg{width:100%;height:auto;display:block}
+
+/* ---------- FIGURE ---------- */
+figure.fig{margin:28px 0;border-radius:var(--radius);overflow:hidden;box-shadow:var(--shadow);border:1px solid var(--line);background:var(--card)}
+figure.fig img{width:100%;display:block}
+figure.fig figcaption{padding:12px 18px;font-size:13px;color:var(--ink-3);background:var(--card)}
+
+/* ---------- TAKEAWAY ---------- */
+.take{counter-reset:tk;display:grid;gap:14px}
+.take-item{counter-increment:tk;background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:20px 22px 20px 66px;position:relative;box-shadow:var(--shadow)}
+.take-item::before{content:counter(tk,decimal-leading-zero);position:absolute;left:20px;top:20px;font-size:22px;font-weight:800;color:var(--orange)}
+.take-item h4{font-size:16px;font-weight:700;margin-bottom:6px}
+.take-item p{font-size:14px;color:var(--ink-2)}
+
+/* ---------- TABLE ---------- */
+table{width:100%;border-collapse:collapse;background:var(--card);border-radius:var(--radius);overflow:hidden;box-shadow:var(--shadow);font-size:14px}
+th,td{padding:12px 14px;text-align:left;border-bottom:1px solid var(--line);vertical-align:top}
+th{background:var(--dark);color:#f0eae2;font-weight:600;font-size:13px}
+td:first-child{font-weight:600;color:var(--ink)}
+tr:last-child td{border-bottom:none}
+
+/* ---------- FOOT ---------- */
+.foot{background:var(--dark);color:#b8b0a6;padding:48px 0 56px;font-size:13.5px}
+.foot h4{color:#f0eae2;font-size:15px;margin-bottom:12px}
+.foot p{margin-bottom:10px}
+.foot .src{margin-top:8px}
+.foot a{color:#ffb27a;text-decoration:none}
+.foot .fine{margin-top:22px;padding-top:18px;border-top:1px solid rgba(255,255,255,.12);font-size:12.5px;color:#8d867c}
+
+@media(max-width:640px){
+  .hero-inner{padding:72px 20px 56px}
+  section{padding:48px 0}
+  .quote{padding:26px 22px 22px 48px}
+  .quote::before{left:14px}
+}
+@media print{
+  .nav{display:none}
+  .hero{min-height:auto}
+  body{font-size:13px}
+}
+</style>
+</head>
+<body>
+
+<!-- ============ HERO ============ -->
+<header class="hero">
+  <img class="hero-img" src="design-hero.jpg" alt="设计观察主视觉">
+  <div class="hero-inner">
+    <div class="hero-kicker">2026 Yunqi Conference · Design Track</div>
+    <h1>从"做界面"<br>到<em>"编译意图"</em></h1>
+    <p class="hero-sub">2026 云栖大会设计方向观察：当界面可以被即时生成，设计的价值正从执行转向对意图、体验与价值的定义。</p>
+    <div class="hero-meta">
+      <span class="chip"><b>9.22–24</b> 杭州</span>
+      <span class="chip">聚焦 <b>4</b> 场设计专业论坛</span>
+      <span class="chip">面向 <b>设计团队负责人</b></span>
+    </div>
+  </div>
+</header>
+
+<nav class="nav"><div class="nav-in">
+  <a href="#glance" class="on">一页速览</a>
+  <a href="#f1">Design to Build</a>
+  <a href="#f2">Go Vibe Designing</a>
+  <a href="#f3">Agentic 工作坊</a>
+  <a href="#f4">生态视角</a>
+  <a href="#take">启示</a>
+  <a href="#app">附录</a>
+</div></nav>
+
+<!-- ============ 导读 ============ -->
+<section id="lede"><div class="wrap">
+  <div class="lede">
+    <p>本文聚焦 2026 云栖大会（9 月 22–24 日，杭州）<strong>设计方向的专业论坛</strong>——「AI 原生设计专场｜Design to Build」「Go Vibe Designing：AI 时代的设计新编译」「AI 设计原生力：Agentic Design 工作坊」，以及设计生态相关场次，整理各嘉宾传递的核心思想与阿里巴巴及伙伴企业的真实实践。</p>
+    <p>内容基于大会官方议程与会后官方摘要，并援引「阿里云设计中心」官方公众号回顾文章及第三方公开报道交叉佐证。</p>
+    <p class="note">口径说明：文中效率、提效、规模类数字除注明来源外，均为讲者或企业现场自述口径，多数未披露样本量与统计周期，供参考而非行业基准；产品与项目发布状态以阿里云官方公告为准。</p>
+  </div>
+</div></section>
+
+<!-- ============ 一页速览 ============ -->
+<section id="glance"><div class="wrap">
+  <div class="sec-head">
+    <div class="sec-no">OVERVIEW</div>
+    <h2>一页速览：本届设计方向的 8 个关键信号</h2>
+    <p class="sec-sub">从设计对象、交付物、角色到度量方式，设计方法论正在被系统性重写。</p>
+  </div>
+  <div class="signals">
+    <div class="signal"><span class="no">01</span><h3>设计对象从"界面"变成"意图"</h3><p>阿里云提出"设计新编译"：把人的意图、审美与价值判断，编译为智能可理解、可执行的表达。</p><span class="who">王路平 · 阿里云设计中心</span></div>
+    <div class="signal"><span class="no">02</span><h3>设计交付物从"资产"变成"系统"</h3><p>Design Spec、Design Skill、设计知识库成为 Agent 可调用的工程资产；CloudAI Design 宣布开源，ADI 正式发布。</p><span class="who">Design to Build 专场</span></div>
+    <div class="signal"><span class="no">03</span><h3>设计师角色三级跳</h3><p>方案生产者 → 方向定义者、协作组织者、质量负责人。稀缺能力不再是画图，而是设计判断力（taste）。</p><span class="who">多场共识</span></div>
+    <div class="signal"><span class="no">04</span><h3>体验度量从功能点击转向意图达成</h3><p>ADI 以意图达成率、高价值意图覆盖、主动服务质量、信任四维度评价 AI 产品；度量从事后"体检报告"走向实时"心率监护"。</p><span class="who">刘骏 / 姚映佳</span></div>
+    <div class="signal"><span class="no">05</span><h3>人机协同有了量化边界</h3><p>16 位真人专家对 16 个 AI 孪生专家对照：AI 评估效率 15 倍、问题发现有效率约 80%，但审美判断稳定性显著更差。</p><span class="who">程遥 · 对照实验</span></div>
+    <div class="signal"><span class="no">06</span><h3>警惕 Taste Slop（审美通胀）</h3><p>Design Skill 能转译风格却不能赋予情境敏感性；输入平庸、风格被无限复制时，AI Slop 会演化为 Taste Slop。</p><span class="who">谭啸 · Design to Build</span></div>
+    <div class="signal"><span class="no">07</span><h3>设计经验变成可调用 Skill</h3><p>「设计灵感社」展出 12 项设计 Skills，覆盖界面生成、视觉规范、设计研究、数据可视化、体验度量与创意生产。</p><span class="who">Agentic Design 工作坊</span></div>
+    <div class="signal"><span class="no">08</span><h3>设计溢出商业，进入文化传承</h3><p>"古壁生辉"公益项目联合四所高校，用 AI 重现壁画、石窟、书法与傩戏等传统文化遗产。</p><span class="who">Go Vibe Designing</span></div>
+  </div>
+</div></section>
+
+<!-- ============ 3.1 ============ -->
+<section id="f1"><div class="wrap">
+  <div class="sec-head">
+    <div class="sec-no">FORUM 01 · 9.23</div>
+    <h2>AI 原生设计专场｜Design to Build：重新构建设计</h2>
+    <p class="sec-sub">本届设计浓度最高的一场论坛。核心命题：当 AI 成为产品体验的底层能力，设计应如何重新定义自己的方法、边界与价值。</p>
+    <div class="forum-tag"><span class="tag">设计方法论</span><span class="tag alt">ADI 发布</span><span class="tag gray">行业规范共建</span></div>
+  </div>
+
+  <div class="person"><div class="avatar">汪</div><div class="person-meta"><h3>汪晓鸣</h3><div class="role">阿里巴巴 MaaS 业务线 AI 创新设计部 设计总监</div></div></div>
+  <div class="body">
+    <p>在主题致辞中给出 <strong>AI-Native Design</strong> 的定义：围绕<strong>意图、上下文与智能协作</strong>构建产品的新设计理念，目标是从"让 AI 回答问题"转向"让 AI 完成任务"。他提出设计对象正由界面扩展为<strong>五层能力栈</strong>——设计不再只交付设计稿，而要深入模型、平台和应用各层，参与模型能力建设、智能体约束与评测以及最终产品构建。</p>
+  </div>
+  <div class="diagram">
+    <div class="dg-title">AI-Native Design 的五层能力栈</div>
+    <div class="dg-sub">设计对象由"界面"向下延伸至模型与平台各层</div>
+    <svg viewBox="0 0 720 300" role="img" aria-label="五层能力栈">
+      <defs>
+        <linearGradient id="g1" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#ff6a00"/><stop offset="1" stop-color="#ff9a4d"/></linearGradient>
+      </defs>
+      <g font-family="PingFang SC,sans-serif">
+        <rect x="150" y="16"  width="420" height="44" rx="10" fill="url(#g1)"/>
+        <text x="360" y="44" fill="#fff" font-size="17" font-weight="700" text-anchor="middle">AI 原生应用</text>
+        <rect x="150" y="70"  width="420" height="44" rx="10" fill="#ff8534" opacity=".92"/>
+        <text x="360" y="98" fill="#fff" font-size="17" font-weight="700" text-anchor="middle">Agent</text>
+        <rect x="150" y="124" width="420" height="44" rx="10" fill="#ff9a4d" opacity=".85"/>
+        <text x="360" y="152" fill="#fff" font-size="17" font-weight="700" text-anchor="middle">Skill</text>
+        <rect x="150" y="178" width="420" height="44" rx="10" fill="#0e7c7b" opacity=".9"/>
+        <text x="360" y="206" fill="#fff" font-size="17" font-weight="700" text-anchor="middle">上下文与工具</text>
+        <rect x="150" y="232" width="420" height="44" rx="10" fill="#14504f"/>
+        <text x="360" y="260" fill="#fff" font-size="17" font-weight="700" text-anchor="middle">模型能力</text>
+        <line x1="600" y1="38" x2="600" y2="254" stroke="#ff6a00" stroke-width="2"/>
+        <path d="M600 38 l-6 10 h12 z" fill="#ff6a00"/><path d="M600 254 l-6 -10 h12 z" fill="#ff6a00"/>
+        <text x="612" y="130" fill="#4a453e" font-size="14" font-weight="600">设计深入各层</text>
+        <text x="612" y="150" fill="#7a746b" font-size="12">参与模型建设</text>
+        <text x="612" y="167" fill="#7a746b" font-size="12">智能体约束与评测</text>
+        <text x="612" y="184" fill="#7a746b" font-size="12">产品构建</text>
+      </g>
+    </svg>
+  </div>
+
+  <div class="person"><div class="avatar">刘</div><div class="person-meta"><h3>刘骏</h3><div class="role">MaaS 业务线 高级体验设计专家</div></div></div>
+  <div class="body">
+    <p>正式发布 <strong>AI Design Intelligence（ADI）</strong>——把设计经验转化为"可调用、可执行、可验证"能力的 AI 设计引擎，由三部分构成。他还分享了一个重要的组织洞察：<span class="hl">企业并不缺 AI 工具，真正缺的是组织人与 Agent 的方式</span>；旧的设计经验并未失效，而是要在 Agent 语境下重新表达——比如"控制感"从二次确认、撤销和回滚，延伸为<strong>过程可见、可随时介入和接管</strong>。</p>
+  </div>
+  <div class="cards">
+    <div class="card"><h4><span class="dot"></span>AI Experience Grammar</h4><p>按产品上下文组织设计原则（Principle）、规则（Rule）、模式（Pattern）与案例（Case），并进一步转成 Skill——同一份知识既帮助设计师判断，也能指导 Agent 执行。</p></div>
+    <div class="card t"><h4><span class="dot"></span>AI Design Production</h4><p>贯通探索生成、精修收敛、系统交付三阶段，分别匹配 Prompt/多模态输入、Canvas 直接操作、组件原生工作空间；已上线 8 支覆盖用研、交互、视觉、工程和评估的设计专家 Agent Team。</p></div>
+    <div class="card"><h4><span class="dot"></span>AI Experience Measurement</h4><p>体验评价从功能使用转向<strong>意图完成</strong>，围绕意图达成率、高价值意图覆盖、主动服务质量和信任四个维度。</p></div>
+  </div>
+
+  <div class="person"><div class="avatar t">谭</div><div class="person-meta"><h3>谭啸</h3><div class="role">MaaS 业务线 高级体验设计专家 ·《Agentic UI 与审美驾驭》</div></div></div>
+  <div class="body">
+    <p>贡献了本届最锋利的警示：Design Skill 能把风格和品位转成约束，却不能赋予 AI 对情境的敏感性；当输入平庸、风格被无限复制，AI Slop 会进一步演化为 <strong>Taste Slop</strong>，带来"审美通货膨胀"。但硬币的另一面是：工业化也能降低优质设计的可获得成本。实践侧，他展示了设计师深度参与万相模型的美学训练（训练方向、美学标准、专业标注、评测迭代），以及阿里云百炼改版中"设计原型 → 代码原型 → 生产级代码"的三段式演进——正式代码库被视为唯一真实信息源，其中一位设计师完成了 40 多次、38 万行以上的代码提交。</p>
+  </div>
+  <div class="quote"><p>品位是持续选择的过程，而非一次选择的结果。AI 是否导致审美升级，取决于人是否保留目标、判断与主导权。</p><div class="q-by">—— <b>谭啸</b>，AI 原生设计专场</div></div>
+  <div class="stats">
+    <div class="stat"><div class="v">73</div><div class="k">精选设计风格</div></div>
+    <div class="stat"><div class="v">32</div><div class="k">视觉技法</div></div>
+    <div class="stat"><div class="v">54</div><div class="k">深度设计参考</div></div>
+    <div class="stat"><div class="v">11</div><div class="k">交付质量维度</div></div>
+  </div>
+  <p style="font-size:12.5px;color:var(--ink-3);margin-top:-8px">其团队沉淀的 Design Skill 构成（现场自述口径）</p>
+
+  <div class="person"><div class="avatar t">吴</div><div class="person-meta"><h3>吴烽琪</h3><div class="role">千问事业部 设计总监</div></div></div>
+  <div class="body">
+    <p>从一线团队视角给出设计新范式的三条落地路径：把需求理解、设计原则与组件规则封装为 AI 可读的 Skill；把重复执行工具化、协作流程工程化；把有效的单点实践沉淀为团队可复用能力（Skill Hub）。其团队的 SmartAdapt 多媒介适配方案在具体场景报告了约 70–80% 的提效（团队自述口径），但设计师仍负责核心视觉和结果把关。他强调 D2C（设计稿转代码）的质量上限取决于设计稿本身的规范性：样式变量与 Token、语义化组件、自动布局、状态流转缺一不可。</p>
+  </div>
+  <div class="quote light"><p>AI 不是设计师的替代者，而是由人定义分工、边界和质量标准后，用来放大判断与执行能力的协作者。</p><div class="q-by">—— <b>吴烽琪</b>，千问事业部</div></div>
+
+  <div class="card" style="margin-top:24px"><h4><span class="dot"></span>行业动作：AI 原生设计行业规范共建启动</h4><p>论坛上启动行业规范共建（工信部国际合作中心工业所、阿里云等参与），包含行业指南白皮书、人才培训与认证体系、设计领域 OPC 共建计划和行业案例库四部分——设计方法论的行业标准化正在提速。</p></div>
+</div></section>
+
+<!-- ============ 3.2 ============ -->
+<section id="f2"><div class="wrap">
+  <div class="sec-head">
+    <div class="sec-no">FORUM 02 · 9.24</div>
+    <h2>Go Vibe Designing：AI 时代的设计新编译</h2>
+    <p class="sec-sub">来自云计算、产品设计、AI 影像、影视工业与体验研究等领域的嘉宾，共同讨论当 Agent 与生成式技术进入真实生产流程，设计的对象、方法与角色将如何变化。</p>
+    <div class="forum-tag"><span class="tag">设计判断力</span><span class="tag alt">CloudAI Design 开源</span><span class="tag gray">古壁生辉</span></div>
+  </div>
+
+  <div class="person"><div class="avatar">王</div><div class="person-meta"><h3>王路平</h3><div class="role">阿里云智能集团 设计中心总监</div></div></div>
+  <div class="body">
+    <p>提出本届设计方向最具概括力的命题——<strong>"设计新编译"</strong>。他引用 Figma《2026 AI Report》：设计师进入开发环节的比例从 2025 年的 21% 升至 2026 年的 42%；阿里云设计中心内部这一比例从 40% 升至 80%。当生成、原型和页面构建越来越容易，稀缺能力转为<strong>设计判断力</strong>：前期识别真实问题、定义意图，中期组织人、Agent、Skill、上下文与工作流，后期设定质量标准并对结果负责。</p>
+  </div>
+  <div class="quote"><p>意图、工程编排，以及最后的审美判断，都是接下来 AI 时代判断力的重要内容。</p><div class="q-by">—— <b>王路平</b>，阿里云设计中心</div></div>
+  <div class="stats">
+    <div class="stat"><div class="v">21%<small>→42%</small></div><div class="k">设计师进入开发环节比例<br>（Figma 2026 AI Report）</div></div>
+    <div class="stat teal"><div class="v">40%<small>→80%</small></div><div class="k">阿里云设计中心内部<br>同口径比例</div></div>
+  </div>
+
+  <div class="person"><div class="avatar">李</div><div class="person-meta"><h3>李剑叶</h3><div class="role">阿里云智能设计部 总经理（开场致辞）</div></div></div>
+  <div class="quote light"><p>设计新编译并不是把设计交给机器，也不是让设计师退到技术之外，而是要求设计更深入地参与技术、业务和现实。设计能够把能力转化为体验，把选项转化为决策，把技术转化为意义。</p><div class="q-by">—— <b>李剑叶</b>，开场致辞</div></div>
+
+  <div class="card" style="margin:22px 0"><h4><span class="dot"></span>标志性事件：CloudAI Design 开源</h4><p>将设计能力整理为开发工具包（Toolkit）与设计指南（Playbook），开发者可通过 <code>npx skills add CloudAI</code> 直接调用设计能力构建产品体验，代码入口为 github.com/Alibaba-Cloud-Design，并融入 AgentScope 开源框架。<strong>设计方法正在成为 Agent 可调用的工程资产，像依赖库一样被安装和引用。</strong></p></div>
+
+  <div class="person"><div class="avatar t">吴</div><div class="person-meta"><h3>吴雨练</h3><div class="role">阿里云设计中心 体验设计专家 ·《面向企业场景的 AI 设计》</div></div></div>
+  <div class="body">
+    <p>总结了企业级设计服务的四个迁移：从被动使用工具到主动创造工具、从多格式设计资产到多模态设计系统、从交付界面和规范到 Agent 可执行的规则体系、从后方支援团队到人+模型+数据+业务的纵深综合团队。最有说服力的案例是 <strong>NBA AI 手办工作流</strong>：过去一个新场景需要 2–3 名设计师投入 1–2 周；封装为 Agent 后，客户上传活动主视觉约 2 小时即可完成场景资产搭建，并可一键发布为办公平台 Skill。</p>
+  </div>
+  <div class="stats">
+    <div class="stat"><div class="v">1–2<small> 周</small></div><div class="k">过去：新场景搭建<br>（2–3 名设计师）</div></div>
+    <div class="stat teal"><div class="v">≈2<small> 小时</small></div><div class="k">现在：封装为 Agent 后<br>上传主视觉即完成</div></div>
+  </div>
+  <div class="quote"><p>AI 时代的设计团队不是用更多人更快画图，而是让更少的设计师通过工具、规则和系统组织更多设计产能。因为设计不只是给出答案，更是定义问题。</p><div class="q-by">—— <b>吴雨练</b>，企业设计将从"劳动密集型"转为"智算密集型"</div></div>
+
+  <div class="person"><div class="avatar t">程</div><div class="person-meta"><h3>程遥</h3><div class="role">阿里云智能设计部 设计专家 ·《用设计的方式打开 Agent 的大脑》</div></div></div>
+  <div class="body">
+    <p>给出了"让 Agent 学会设计"的完整机制——<strong>上学、考试、入职</strong>：以 9 本设计书籍、11 条心理学定理、13 项核心设计理论和 80 条设计规则建立知识底座；用 6 维度评估数据集"考试"；再以品牌手册、设计系统、产品定义、代码规范四类可插拔业务资产"入职"。一场 16 位真人专家对 16 个 AI 孪生专家的对照实验给出了人机分工的量化依据。</p>
+  </div>
+  <div class="diagram">
+    <div class="dg-title">让 Agent 学会设计：上学 → 考试 → 入职</div>
+    <div class="dg-sub">把设计师的判断转译为 Agent 可学习、调用、迭代的能力</div>
+    <svg viewBox="0 0 720 190" role="img" aria-label="上学考试入职三步">
+      <g font-family="PingFang SC,sans-serif">
+        <rect x="20"  y="30" width="200" height="120" rx="14" fill="#fff1e6" stroke="#ff6a00" stroke-width="1.5"/>
+        <text x="120" y="62" fill="#d45500" font-size="19" font-weight="800" text-anchor="middle">上学</text>
+        <text x="120" y="90" fill="#4a453e" font-size="12.5" text-anchor="middle">9 本书 · 11 条心理学定理</text>
+        <text x="120" y="110" fill="#4a453e" font-size="12.5" text-anchor="middle">13 项设计理论 · 80 条规则</text>
+        <text x="120" y="132" fill="#7a746b" font-size="11.5" text-anchor="middle">建立知识底座</text>
+        <path d="M228 90 h34 m-8 -7 l8 7 l-8 7" stroke="#ff6a00" stroke-width="2.5" fill="none"/>
+        <rect x="262" y="30" width="200" height="120" rx="14" fill="#e6f4f3" stroke="#0e7c7b" stroke-width="1.5"/>
+        <text x="362" y="62" fill="#0e7c7b" font-size="19" font-weight="800" text-anchor="middle">考试</text>
+        <text x="362" y="90" fill="#4a453e" font-size="12.5" text-anchor="middle">6 维度评估数据集</text>
+        <text x="362" y="110" fill="#4a453e" font-size="12.5" text-anchor="middle">形成稳定判断</text>
+        <text x="362" y="132" fill="#7a746b" font-size="11.5" text-anchor="middle">用评估数据校准</text>
+        <path d="M470 90 h34 m-8 -7 l8 7 l-8 7" stroke="#0e7c7b" stroke-width="2.5" fill="none"/>
+        <rect x="504" y="30" width="200" height="120" rx="14" fill="#141210"/>
+        <text x="604" y="62" fill="#ff9a4d" font-size="19" font-weight="800" text-anchor="middle">入职</text>
+        <text x="604" y="90" fill="#e8e2da" font-size="12.5" text-anchor="middle">品牌手册 · 设计系统</text>
+        <text x="604" y="110" fill="#e8e2da" font-size="12.5" text-anchor="middle">产品定义 · 代码规范</text>
+        <text x="604" y="132" fill="#b8b0a6" font-size="11.5" text-anchor="middle">四类可插拔业务资产</text>
+      </g>
+    </svg>
+  </div>
+  <div class="stats">
+    <div class="stat"><div class="v">15<small> 倍</small></div><div class="k">AI 评估效率<br>vs 真人专家</div></div>
+    <div class="stat teal"><div class="v">≈80%</div><div class="k">双方问题发现有效率<br>（AI 略低）</div></div>
+    <div class="stat"><div class="v">更高</div><div class="k">AI 审美规则评估方差<br>→ 稳定性不足</div></div>
+  </div>
+  <p style="font-size:12.5px;color:var(--ink-3);margin-top:-8px">16 位真人专家 vs 16 个 AI 孪生专家对照实验（现场自述口径）</p>
+  <div class="quote light"><p>在未来所有的准确性被技术征服以后，或许审美和表达的多样性，将成为人们最终的追求。</p><div class="q-by">—— <b>程遥</b>，可传承的知识和重复执行交给 Agent，审美判断仍是人的核心责任</div></div>
+
+  <div class="person"><div class="avatar">姚</div><div class="person-meta"><h3>姚映佳</h3><div class="role">安克创新 首席产品体验官 ·《刻度：AI 与关系经济下的体验尺度》</div></div></div>
+  <div class="body">
+    <p>带来消费电子视角的"刻度"实践：把体验从"玄学"转为满意度、NPS、溢价、份额等可比较的商业语言；AI 进一步把设计对象从界面改为<strong>意图与结果</strong>，体验度量从事后"体检报告"走向实时"心率监护"。组织侧，安克把业务拆为 AI 可执行的原子步骤。</p>
+  </div>
+  <div class="stats">
+    <div class="stat"><div class="v">600+</div><div class="k">活跃 Agent</div></div>
+    <div class="stat"><div class="v">220<small> 万+</small></div><div class="k">自建 AI 能力出图</div></div>
+    <div class="stat"><div class="v">90%</div><div class="k">覆盖营销物料</div></div>
+    <div class="stat teal"><div class="v">44%</div><div class="k">产能提升</div></div>
+  </div>
+  <p style="font-size:12.5px;color:var(--ink-3);margin-top:-8px">安克创新披露数据（企业自述口径，各数据与阶段对应关系未逐一说明）</p>
+  <div class="quote"><p>AI 时代，所有东西都值得围绕体验重做一次，也值得用 AI 重做一次。而 AI 带来的新生产力萌芽，很可能让第二次文艺复兴发生在我们身边。</p><div class="q-by">—— <b>姚映佳</b>，安克创新</div></div>
+
+  <div class="person"><div class="avatar t">蔡</div><div class="person-meta"><h3>蔡新元</h3><div class="role">华中科技大学 设计学院院长 ·《电影工业的路径与进展》</div></div></div>
+  <div class="body">
+    <p>从 AI 电影工业角度提出：AI 视频已从单点生成进入工业化生产阶段，设计问题由"能不能做出来"转向<strong>"能否稳定、精准地控制"</strong>——创作者需要把角色一致性、细腻情绪、动作迁移、空间构建和云端协作整合进同一套生产系统，使电影变得可计算、可复用、可协作、可规模化。</p>
+  </div>
+  <div class="quote light"><p>真正决定作品能否打动人的，仍然是对文化、故事、人物关系和真实情感的理解与设计。在人工智能时代，真正生存的逻辑是如何处理和人的关系。</p><div class="q-by">—— <b>蔡新元</b>，华中科技大学设计学院</div></div>
+
+  <div class="person"><div class="avatar t">周</div><div class="person-meta"><h3>周楠</h3><div class="role">梦见城科技 知名导演、监制 ·《AI 精品影视创作与制作》</div></div></div>
+  <div class="body">
+    <p>从影视工业角度补充了组织维度：AI 影视工业化的护城河不是孤立的生成工作流（他称之为"涸泽而渔的生意"），而是"超级个体—精英小队—创作中台—培训机制—内部工具"的组织系统，知识、经验、流程和规则每周沉淀为内部工具。他同时警示精品内容不能被简化为"一人一夜完成电影"的速成神话。</p>
+  </div>
+  <div class="quote"><p>蒸馏冗余而不蒸干艺术与人。核心的力量、核心的创作，那些闪闪发光的人们不能被压缩，不能被蒸馏。</p><div class="q-by">—— <b>周楠</b>，知名导演、监制</div></div>
+
+  <div class="card" style="margin-top:24px"><h4><span class="dot"></span>公益发布：AI 设计让古壁生辉</h4><p>阿里设计携手西安美术学院对山西平顺大云院《维摩诘经变》壁画进行 AI 数字化重现，并联合宁波大学（云冈石窟交互体验"万象和鸣"）、中国美术学院（书法生活美学平台"为未书"）、浙江大学（文化计算项目《傩场》）等高校探索传统文化的数字新生——AI 设计能力正在溢出商业场景，进入文化传承领域。</p></div>
+</div></section>
+
+<!-- ============ 3.3 ============ -->
+<section id="f3"><div class="wrap">
+  <div class="sec-head">
+    <div class="sec-no">FORUM 03 · 9.23</div>
+    <h2>AI 设计原生力：Agentic Design 工作坊</h2>
+    <p class="sec-sub">实操向分会场。总纲：当 AI 成为设计工作的原生环境，设计师的价值正在转向规则定义、系统构建与质量判断。</p>
+    <div class="forum-tag"><span class="tag">实操工作流</span><span class="tag alt">Design I/O</span><span class="tag gray">12 项设计 Skills</span></div>
+  </div>
+
+  <figure class="fig">
+    <img src="design-workshop.jpg" alt="设计师与 AI 共建设计资产">
+    <figcaption>工作坊意象：设计经验从"依赖个人"走向"可调用、可复用"——人与 Agent 在同一工作台协作。</figcaption>
+  </figure>
+
+  <div class="quote"><p>设计不再只是"把结果做出来"，更是在建立一套人与 Agent 可以持续协作、共同演进的生产方式。</p><div class="q-by">—— 工作坊总纲（据「阿里云设计中心」官方公众号回顾）</div></div>
+
+  <div class="person"><div class="avatar">朱</div><div class="person-meta"><h3>朱颜 / 余艾琳</h3><div class="role">阿里云 视觉设计专家 / 体验设计专家 ·《Vibe Designing 设计新范式》</div></div></div>
+  <div class="body">
+    <p>朱颜提出 <strong>Design I/O</strong>——把业务 Context、设计规则、组件与 Skill 组织成可被 Agent 持续调用的 Loop，让设计从一次性输入输出变为"持续输入、运行、评价与回流"的闭环。协作方式也在变化：<span class="hl">画布与代码不再是上下游，而是同一个产品的两种编辑视图</span>，产品开发从接力赛变成多人同时编辑一个活的系统。余艾琳则展示了声明式 GenUI 与设计资产规则体系：界面围绕任务动态组合、Human-in-the-Loop——"界面不再只是被设计出来，也可以在意图中被组织出来"。</p>
+  </div>
+  <div class="diagram">
+    <div class="dg-title">Design I/O：从一次性交付到持续闭环</div>
+    <div class="dg-sub">业务 Context · 设计规则 · 组件 · Skill 组织为可被 Agent 持续调用的 Loop</div>
+    <svg viewBox="0 0 720 240" role="img" aria-label="Design I/O 闭环">
+      <g font-family="PingFang SC,sans-serif">
+        <circle cx="360" cy="120" r="86" fill="none" stroke="#e8e2d9" stroke-width="26"/>
+        <path d="M360 34 a86 86 0 0 1 86 86" fill="none" stroke="#ff6a00" stroke-width="26"/>
+        <path d="M446 120 a86 86 0 0 1 -86 86" fill="none" stroke="#ff9a4d" stroke-width="26"/>
+        <path d="M360 206 a86 86 0 0 1 -86 -86" fill="none" stroke="#0e7c7b" stroke-width="26"/>
+        <path d="M274 120 a86 86 0 0 1 86 -86" fill="none" stroke="#3aa8a0" stroke-width="26"/>
+        <text x="360" y="112" fill="#1c1a17" font-size="17" font-weight="800" text-anchor="middle">Design</text>
+        <text x="360" y="134" fill="#1c1a17" font-size="17" font-weight="800" text-anchor="middle">I/O Loop</text>
+        <text x="470" y="52" fill="#d45500" font-size="15" font-weight="700">输入</text>
+        <text x="470" y="70" fill="#7a746b" font-size="12">Context·规则·组件·Skill</text>
+        <text x="470" y="196" fill="#d45500" font-size="15" font-weight="700">运行</text>
+        <text x="470" y="214" fill="#7a746b" font-size="12">Agent 持续调用</text>
+        <text x="150" y="196" fill="#0e7c7b" font-size="15" font-weight="700">评价</text>
+        <text x="150" y="214" fill="#7a746b" font-size="12">质量与体验判断</text>
+        <text x="150" y="52" fill="#0e7c7b" font-size="15" font-weight="700">回流</text>
+        <text x="150" y="70" fill="#7a746b" font-size="12">经验沉淀为资产</text>
+      </g>
+    </svg>
+  </div>
+
+  <div class="person"><div class="avatar t">王</div><div class="person-meta"><h3>王闻佳</h3><div class="role">阿里巴巴 MaaS 业务线 体验设计专家 ·《Agent 产品设计：从设计语法到智能生成》</div></div></div>
+  <div class="body">
+    <p>提出 <strong>Design Grammar</strong> 框架：设计知识 Agent 整理经验、设计工程 Agent 把可视化资产转为 Agent-ready 材料、Spec + 协同画布 + 组件化工作流连接多角色与多 Agent，协同推进方案与完成交付。</p>
+  </div>
+  <div class="quote light"><p>当 Agent 与设计师拥有同样的知识，拿着同一份材料，坐在同一张工作台前，它才能真正进入设计工作流，产生生产价值。</p><div class="q-by">—— <b>王闻佳</b>，Agent 产品设计</div></div>
+
+  <div class="cards">
+    <div class="card"><h4><span class="dot"></span>UES Assis：AI 驱动的体验度量</h4><p>郭梦妍 / 林点雨：AI 生成加速后，<strong>体验判断成为新瓶颈</strong>。把 UES 体验度量体系转化为 AI 可理解、可执行、可复核的判断系统（情境适配、准则拆解、多视角评估与证据收敛，构建虚拟用户和 AI 专家评估），封装为 Skills 让体验评估左移、贯穿研发全周期。</p></div>
+    <div class="card t"><h4><span class="dot"></span>生成式视频产品的交互设计</h4><p>杨光涛（阿里云）/ 张宇翔（LibTV）：AI 视频的下一场竞争不只是模型效果，更是创作体验与工作流的竞争——从单次生成走向稳定、可控、可复用的规模化生产。</p></div>
+    <div class="card"><h4><span class="dot"></span>设计咨询方法论</h4><p>吴坷：面向传统行业智能化转型的"价值场景识别 → 智能转型落地"全流程咨询方法——设计师的工作正在从"造工具"变成"配搭档"。</p></div>
+  </div>
+  <div class="quote"><p>AI UX 不是消除随机性，而是在随机性中建立控制点。第一次生成决定惊喜，第二次修改决定产品是否专业。</p><div class="q-by">—— <b>杨光涛</b>，生成式视频产品交互设计</div></div>
+
+  <div class="card" style="margin-top:22px"><h4><span class="dot"></span>展区落地：设计灵感社 · 12 项设计 Skills</h4><p>大会 3 号馆「设计灵感社」集中呈现 12 项阿里云智能设计中心打造的设计 Skills，覆盖界面生成、视觉规范、设计研究、数据可视化、体验度量与创意内容生产——把设计师长期积累的方法、规则与判断标准转化为 Agent 能理解和执行的能力，是"设计经验可调用、可复用"的具象展示。</p></div>
+</div></section>
+
+<!-- ============ 3.4 ============ -->
+<section id="f4"><div class="wrap">
+  <div class="sec-head">
+    <div class="sec-no">FORUM 04 · 生态视角</div>
+    <h2>车企与工具厂商的设计实践</h2>
+    <p class="sec-sub">设计方法论的重写不只发生在云厂商，也在车企座舱、创意工具与平面设计学界同步展开。</p>
+    <div class="forum-tag"><span class="tag">Brand Native Design</span><span class="tag alt">创意工具</span><span class="tag gray">学界圆桌</span></div>
+  </div>
+
+  <div class="person"><div class="avatar">方</div><div class="person-meta"><h3>方思远</h3><div class="role">蔚来 座舱数字设计负责人 ·《变与不变，蔚来的 AI 设计初心》</div></div></div>
+  <div class="body">
+    <p>对汽车行业产品团队尤具参考价值。蔚来以 <strong>Brand Native Design</strong> 处理 AI 与品牌的关系，用"纯粹、有温度、精致、未来感"四个品牌维度组织 AI 座舱设计表达；NOMI 的表达维度覆盖面部表情、手势、配件、超自然 TTS、硬件动作和全感座舱；并提出"未来汽车 = 物理世界智能体"。即便在最激进的 AI 化中，品牌一致性与能力边界仍是设计的"不变量"。</p>
+  </div>
+  <div class="diagram">
+    <div class="dg-title">NIO AI Design Harness 的四项构成</div>
+    <div class="dg-sub">品牌一致性与能力边界是 AI 座舱设计的"不变量"</div>
+    <svg viewBox="0 0 720 130" role="img" aria-label="NIO Harness 四项">
+      <g font-family="PingFang SC,sans-serif">
+        <rect x="16"  y="30" width="160" height="70" rx="12" fill="#fff1e6" stroke="#ff6a00" stroke-width="1.5"/>
+        <text x="96" y="60" fill="#d45500" font-size="16" font-weight="700" text-anchor="middle">人格行为</text>
+        <text x="96" y="82" fill="#7a746b" font-size="11.5" text-anchor="middle">品牌人格的表达</text>
+        <rect x="192" y="30" width="160" height="70" rx="12" fill="#fff1e6" stroke="#ff6a00" stroke-width="1.5"/>
+        <text x="272" y="60" fill="#d45500" font-size="16" font-weight="700" text-anchor="middle">精确执行</text>
+        <text x="272" y="82" fill="#7a746b" font-size="11.5" text-anchor="middle">意图到动作的可靠</text>
+        <rect x="368" y="30" width="160" height="70" rx="12" fill="#e6f4f3" stroke="#0e7c7b" stroke-width="1.5"/>
+        <text x="448" y="60" fill="#0e7c7b" font-size="16" font-weight="700" text-anchor="middle">减法约束</text>
+        <text x="448" y="82" fill="#7a746b" font-size="11.5" text-anchor="middle">克制的设计边界</text>
+        <rect x="544" y="30" width="160" height="70" rx="12" fill="#e6f4f3" stroke="#0e7c7b" stroke-width="1.5"/>
+        <text x="624" y="60" fill="#0e7c7b" font-size="16" font-weight="700" text-anchor="middle">能力边界</text>
+        <text x="624" y="82" fill="#7a746b" font-size="11.5" text-anchor="middle">可知可控的范围</text>
+      </g>
+    </svg>
+  </div>
+
+  <div class="cards">
+    <div class="card"><h4><span class="dot"></span>张晨 · Canva 可画</h4><p>中日韩印区域设计负责人：分享设计工具在 AI 时代的进化——连接创意、专业控制与规模化生产。</p></div>
+    <div class="card t"><h4><span class="dot"></span>刘钊 · 深圳平面设计协会</h4><p>主席：从平面设计的学术立场探讨 Prompt 与设计的关系。</p></div>
+    <div class="card"><h4><span class="dot"></span>圆桌：创造力的解放还是想象力的趋同</h4><p>学界、AI 艺术家与产业方共同辩论。这个问题本身没有标准答案，但已成为设计行业必须直面的时代命题。</p></div>
+  </div>
+</div></section>
+
+<!-- ============ 启示 ============ -->
+<section id="take"><div class="wrap">
+  <div class="sec-head">
+    <div class="sec-no">TAKEAWAYS</div>
+    <h2>给设计团队负责人的 5 条启示</h2>
+    <p class="sec-sub">综合本届设计方向各论坛的思想与案例，对正在推进 AI 转型的设计组织可操作的落点。</p>
+  </div>
+  <div class="take">
+    <div class="take-item"><h4>把设计资产升级为"机器可读"的设计系统</h4><p>Token、语义化组件、设计规则、验收标准不仅要给人看，还要封装为 Agent 可调用的 Skill/Spec。CloudAI Design 的开源形态（Toolkit + Playbook + 可安装 Skill）提供了可参照标准。起步建议：选一个高频设计场景，写清意图、成功标准与规范，设置生成前后的自动评价关卡，记录人工基线、Agent 耗时与返工率。</p></div>
+    <div class="take-item"><h4>重新定义体验度量：从功能点击到意图达成</h4><p>为 AI 产品建立意图达成率、高价值意图覆盖、主动服务质量、信任四维度的度量体系；把 NPS 等终点指标与全旅程实时感知指标并置，让体验评估从"体检报告"变成"心率监护"。</p></div>
+    <div class="take-item"><h4>把设计判断力作为团队核心能力建设</h4><p>生产力被放大后，"决定做什么、做到什么程度"成为新瓶颈。用可体验的原型替代长文档评审，用评测集替代静态规范，先上线小版本再看数据修正标准——判断力靠"亲手做、认真判断、看结果、再修正标准"逐轮积累。</p></div>
+    <div class="take-item"><h4>人机分工要量化、要有护栏</h4><p>参照"AI 评估效率 15 倍、有效率约 80%、审美稳定性不足"的实验结论：规则明确的重复执行（适配、走查、测评、初稿）大胆交给 Agent；意图定义、审美选择、价值取舍和结果责任留给人。警惕 Taste Slop——保留目标、判断与主导权。</p></div>
+    <div class="take-item"><h4>让设计经验版本化，实现"人走本事留下"</h4><p>把高手的方法、规则与判断标准沉淀为组织级 Skill 与知识库（如 Skill Hub、Design Grammar），使设计产能从"依赖个人"转向"可调用、可复用"，用更少的设计师组织更大规模的智能产能。</p></div>
+  </div>
+</div></section>
+
+<!-- ============ 附录 ============ -->
+<section id="app"><div class="wrap">
+  <div class="sec-head">
+    <div class="sec-no">APPENDIX</div>
+    <h2>附录：设计相关论坛与资料来源</h2>
+  </div>
+  <table>
+    <thead><tr><th style="width:34%">论坛</th><th style="width:12%">时间</th><th>核心命题</th></tr></thead>
+    <tbody>
+      <tr><td>AI 原生设计专场｜Design to Build</td><td>9.23</td><td>AI-Native Design 五层能力栈；ADI 发布；行业规范共建</td></tr>
+      <tr><td>AI 设计原生力：Agentic Design 工作坊</td><td>9.23</td><td>四大设计工作流实操：Vibe Designing / Agent 产品设计 / 体验度量 / 设计咨询</td></tr>
+      <tr><td>Go Vibe Designing：设计新编译</td><td>9.24</td><td>设计判断力；CloudAI Design 开源；Agent"上学—考试—入职"</td></tr>
+      <tr><td>设计生态相关场次（车企/工具/学界）</td><td>9.23–24</td><td>Brand Native Design；创意工具进化；创造力圆桌</td></tr>
+    </tbody>
+  </table>
+
+  <div class="cards" style="margin-top:26px">
+    <div class="card"><h4><span class="dot"></span>官方来源</h4><ul><li>2026 云栖大会官网（议程/直播/嘉宾）yunqi.aliyun.com</li><li>大会官方议程数据与会后官方摘要材料</li></ul></div>
+    <div class="card t"><h4><span class="dot"></span>官方公众号回顾</h4><ul><li>「阿里云设计中心」《分论坛回顾｜AI 时代的设计新编译》</li><li>「阿里云设计中心」《Agentic Design 工作坊：把设计经验变成 AI 生产力》</li></ul></div>
+    <div class="card"><h4><span class="dot"></span>第三方报道</h4><ul><li>证券时报《2026 云栖大会观察：AI 从"能生成"走向"能交付"》</li><li>腾讯新闻、DoNews 等大会综合报道</li></ul></div>
+  </div>
+</div></section>
+
+<footer class="foot"><div class="wrap">
+  <h4>口径说明</h4>
+  <p>文中所有效率提升、转化率、规模类数字（如提效 70–80%、AI 评估效率 15 倍、安克 600+ Agent 等）均为演讲者或企业现场自述口径，多数未披露样本量、统计周期与测算方法，请勿直接作为行业基准引用；产品与项目发布状态以阿里云官方公告为准。</p>
+  <p class="src">本文基于大会官方议程与会后官方摘要整理，并援引「阿里云设计中心」官方公众号回顾文章及第三方公开报道交叉佐证。配套文档：《2026 云栖大会 · 产品观察》。</p>
+  <p class="fine">整理日期：2026 年 10 月 · 仅供产品设计团队内部学习与交流参考</p>
+</div></footer>
+
+<script>
+// 导航高亮
+var links=document.querySelectorAll('.nav a');
+var secs=[];links.forEach(function(a){var t=document.querySelector(a.getAttribute('href'));if(t)secs.push([a,t]);});
+function onScroll(){var y=window.scrollY+120;var cur=secs[0];secs.forEach(function(p){if(p[1].offsetTop<=y)cur=p;});links.forEach(function(a){a.classList.toggle('on',a===cur[0]);});}
+window.addEventListener('scroll',onScroll,{passive:true});onScroll();
+</script>
+</body>
+</html>
