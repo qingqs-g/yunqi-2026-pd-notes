@@ -1,0 +1,466 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>2026 云栖大会 · 产品观察｜执行下沉，判断上浮</title>
+<style>
+:root{
+  --orange:#ff6a00; --orange-soft:#fff1e6; --orange-deep:#d45500;
+  --teal:#0e7c7b; --teal-soft:#e6f4f3;
+  --ink:#1c1a17; --ink-2:#4a453e; --ink-3:#7a746b;
+  --paper:#faf8f5; --card:#ffffff; --line:#e8e2d9;
+  --dark:#141210; --dark-2:#221e1a;
+  --radius:16px;
+  --shadow:0 2px 6px rgba(28,26,23,.05),0 12px 32px rgba(28,26,23,.07);
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  font-family:"PingFang SC","Hiragino Sans GB","Microsoft YaHei",-apple-system,sans-serif;
+  background:var(--paper); color:var(--ink); line-height:1.85; font-size:16px;
+  -webkit-font-smoothing:antialiased;
+}
+.wrap{max-width:960px;margin:0 auto;padding:0 24px}
+
+/* ---------- HERO ---------- */
+.hero{position:relative;color:#fff;overflow:hidden;background:var(--dark)}
+.hero-img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:.9}
+.hero::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(20,18,16,.25) 0%,rgba(20,18,16,.55) 45%,rgba(20,18,16,.94) 100%)}
+.hero-inner{position:relative;z-index:2;padding:96px 24px 72px;max-width:960px;margin:0 auto}
+.hero-kicker{display:inline-flex;align-items:center;gap:8px;font-size:13px;letter-spacing:.18em;text-transform:uppercase;color:#ffb27a;font-weight:600;margin-bottom:20px}
+.hero-kicker::before{content:"";width:28px;height:2px;background:var(--orange)}
+.hero h1{font-size:clamp(34px,5.4vw,56px);line-height:1.2;font-weight:800;letter-spacing:.01em;margin-bottom:14px}
+.hero h1 em{font-style:normal;color:var(--orange)}
+.hero-sub{font-size:clamp(16px,2.2vw,20px);color:#e8e2da;font-weight:400;max-width:640px;margin-bottom:32px}
+.hero-meta{display:flex;flex-wrap:wrap;gap:10px}
+.chip{display:inline-flex;align-items:center;gap:6px;padding:7px 14px;border:1px solid rgba(255,255,255,.28);border-radius:999px;font-size:13px;color:#f0eae2;background:rgba(255,255,255,.07);backdrop-filter:blur(6px)}
+.chip b{color:var(--orange);font-weight:700}
+
+/* ---------- NAV ---------- */
+.nav{position:sticky;top:0;z-index:50;background:rgba(250,248,245,.92);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+.nav-in{max-width:960px;margin:0 auto;padding:0 24px;display:flex;gap:4px;overflow-x:auto;scrollbar-width:none}
+.nav-in::-webkit-scrollbar{display:none}
+.nav a{flex:0 0 auto;padding:14px 14px;font-size:14px;color:var(--ink-2);text-decoration:none;font-weight:500;border-bottom:2px solid transparent;white-space:nowrap}
+.nav a:hover{color:var(--orange)}
+.nav a.on{color:var(--orange);border-bottom-color:var(--orange);font-weight:700}
+
+/* ---------- SECTION ---------- */
+section{padding:64px 0}
+section+section{border-top:1px solid var(--line)}
+.sec-head{margin-bottom:36px}
+.sec-no{font-size:13px;font-weight:800;letter-spacing:.2em;color:var(--orange);margin-bottom:8px}
+.sec-head h2{font-size:clamp(24px,3.6vw,34px);font-weight:800;line-height:1.35;letter-spacing:.01em}
+.sec-head .sec-sub{margin-top:10px;color:var(--ink-3);font-size:15px;max-width:720px}
+.forum-tag{display:inline-flex;gap:8px;flex-wrap:wrap;margin-top:14px}
+.tag{font-size:12px;padding:4px 11px;border-radius:6px;background:var(--orange-soft);color:var(--orange-deep);font-weight:600}
+.tag.alt{background:var(--teal-soft);color:var(--teal)}
+.tag.gray{background:#efece6;color:var(--ink-3)}
+
+/* ---------- LEDE ---------- */
+.lede{background:var(--card);border:1px solid var(--line);border-left:4px solid var(--orange);border-radius:var(--radius);padding:26px 28px;box-shadow:var(--shadow)}
+.lede p{color:var(--ink-2);font-size:15.5px}
+.lede p+p{margin-top:12px}
+.lede .note{font-size:13px;color:var(--ink-3);margin-top:14px;padding-top:14px;border-top:1px dashed var(--line)}
+
+/* ---------- SIGNAL GRID ---------- */
+.signals{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:16px}
+.signal{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:22px;box-shadow:var(--shadow);position:relative;overflow:hidden;transition:transform .18s ease,box-shadow .18s ease}
+.signal:hover{transform:translateY(-3px);box-shadow:0 6px 14px rgba(28,26,23,.08),0 18px 40px rgba(28,26,23,.1)}
+.signal .no{position:absolute;top:14px;right:18px;font-size:34px;font-weight:800;color:#f0ebe3;line-height:1}
+.signal h3{font-size:16.5px;font-weight:700;margin-bottom:8px;padding-right:34px;line-height:1.5}
+.signal p{font-size:14px;color:var(--ink-2)}
+.signal .who{display:block;margin-top:10px;font-size:12.5px;color:var(--orange-deep);font-weight:600}
+
+/* ---------- SPEAKER ---------- */
+.person{display:flex;gap:16px;margin:34px 0 14px;align-items:flex-start}
+.avatar{flex:0 0 auto;width:46px;height:46px;border-radius:50%;background:linear-gradient(135deg,var(--orange),#ff9a4d);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:18px;box-shadow:0 4px 12px rgba(255,106,0,.3)}
+.avatar.t{background:linear-gradient(135deg,var(--teal),#3aa8a0);box-shadow:0 4px 12px rgba(14,124,123,.3)}
+.person-meta h3{font-size:18px;font-weight:800;line-height:1.4}
+.person-meta .role{font-size:13px;color:var(--ink-3);margin-top:2px}
+.body p{color:var(--ink-2);margin-bottom:14px}
+.body p strong{color:var(--ink)}
+.body .hl{background:linear-gradient(transparent 62%,#ffd9b8 62%);font-weight:700;color:var(--ink)}
+
+/* ---------- QUOTE ---------- */
+.quote{position:relative;background:var(--dark);color:#f4efe8;border-radius:var(--radius);padding:30px 32px 26px 60px;margin:22px 0;box-shadow:var(--shadow)}
+.quote::before{content:"\201C";position:absolute;left:20px;top:6px;font-size:64px;line-height:1;color:var(--orange);font-family:Georgia,serif}
+.quote p{font-size:17.5px;font-weight:600;line-height:1.75}
+.quote .q-by{margin-top:12px;font-size:13px;color:#b8b0a6}
+.quote .q-by b{color:var(--orange)}
+.quote.light{background:var(--orange-soft);color:var(--ink)}
+.quote.light::before{color:var(--orange)}
+.quote.light .q-by{color:var(--ink-3)}
+
+/* ---------- STAT ---------- */
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:14px;margin:22px 0}
+.stat{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:18px 16px;text-align:center;box-shadow:var(--shadow)}
+.stat .v{font-size:27px;font-weight:800;color:var(--orange);line-height:1.2;letter-spacing:-.01em}
+.stat .v small{font-size:15px;font-weight:700}
+.stat .k{font-size:12.5px;color:var(--ink-3);margin-top:6px;line-height:1.5}
+.stat.teal .v{color:var(--teal)}
+
+/* ---------- CARDS ---------- */
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px;margin:22px 0}
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:20px;box-shadow:var(--shadow)}
+.card h4{font-size:15.5px;font-weight:700;margin-bottom:8px;display:flex;align-items:center;gap:8px}
+.card h4 .dot{width:8px;height:8px;border-radius:50%;background:var(--orange);flex:0 0 auto}
+.card.t h4 .dot{background:var(--teal)}
+.card p,.card li{font-size:13.5px;color:var(--ink-2)}
+.card ul{padding-left:18px}
+.card li{margin-bottom:4px}
+
+/* ---------- DIAGRAM ---------- */
+.diagram{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:26px 22px;margin:24px 0;box-shadow:var(--shadow)}
+.diagram .dg-title{font-size:14px;font-weight:700;color:var(--ink);margin-bottom:4px;text-align:center}
+.diagram .dg-sub{font-size:12.5px;color:var(--ink-3);text-align:center;margin-bottom:18px}
+.diagram svg{width:100%;height:auto;display:block}
+
+/* ---------- FIGURE ---------- */
+figure.fig{margin:28px 0;border-radius:var(--radius);overflow:hidden;box-shadow:var(--shadow);border:1px solid var(--line);background:var(--card)}
+figure.fig img{width:100%;display:block}
+figure.fig figcaption{padding:12px 18px;font-size:13px;color:var(--ink-3);background:var(--card)}
+
+/* ---------- TAKEAWAY ---------- */
+.take{counter-reset:tk;display:grid;gap:14px}
+.take-item{counter-increment:tk;background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:20px 22px 20px 66px;position:relative;box-shadow:var(--shadow)}
+.take-item::before{content:counter(tk,decimal-leading-zero);position:absolute;left:20px;top:20px;font-size:22px;font-weight:800;color:var(--orange)}
+.take-item h4{font-size:16px;font-weight:700;margin-bottom:6px}
+.take-item p{font-size:14px;color:var(--ink-2)}
+
+/* ---------- TABLE ---------- */
+table{width:100%;border-collapse:collapse;background:var(--card);border-radius:var(--radius);overflow:hidden;box-shadow:var(--shadow);font-size:14px}
+th,td{padding:12px 14px;text-align:left;border-bottom:1px solid var(--line);vertical-align:top}
+th{background:var(--dark);color:#f0eae2;font-weight:600;font-size:13px}
+td:first-child{font-weight:600;color:var(--ink)}
+tr:last-child td{border-bottom:none}
+
+/* ---------- FOOT ---------- */
+.foot{background:var(--dark);color:#b8b0a6;padding:48px 0 56px;font-size:13.5px}
+.foot h4{color:#f0eae2;font-size:15px;margin-bottom:12px}
+.foot p{margin-bottom:10px}
+.foot .src{margin-top:8px}
+.foot a{color:#ffb27a;text-decoration:none}
+.foot .fine{margin-top:22px;padding-top:18px;border-top:1px solid rgba(255,255,255,.12);font-size:12.5px;color:#8d867c}
+
+@media(max-width:640px){
+  .hero-inner{padding:72px 20px 56px}
+  section{padding:48px 0}
+  .quote{padding:26px 22px 22px 48px}
+  .quote::before{left:14px}
+}
+@media print{
+  .nav{display:none}
+  .hero{min-height:auto}
+  body{font-size:13px}
+}
+</style>
+</head>
+<body>
+
+<!-- ============ HERO ============ -->
+<header class="hero">
+  <img class="hero-img" src="product-hero.jpg" alt="产品观察主视觉">
+  <div class="hero-inner">
+    <div class="hero-kicker">2026 Yunqi Conference · Product Track</div>
+    <h1>执行<em>下沉</em>，<br>判断<em>上浮</em></h1>
+    <p class="hero-sub">2026 云栖大会产品方向观察：当 Agent 接管执行，产品经理的稀缺能力正从"做出来"转向"决定做什么、做到什么程度"。</p>
+    <div class="hero-meta">
+      <span class="chip"><b>9.22–24</b> 杭州</span>
+      <span class="chip">聚焦 <b>产品/组织</b> 专业论坛</span>
+      <span class="chip">面向 <b>产品团队负责人</b></span>
+    </div>
+  </div>
+</header>
+
+<nav class="nav"><div class="nav-in">
+  <a href="#glance" class="on">一页速览</a>
+  <a href="#f1">产品经理状元秀</a>
+  <a href="#f2">AI 原生研发组织</a>
+  <a href="#f3">组织与服务</a>
+  <a href="#take">启示</a>
+  <a href="#app">附录</a>
+</div></nav>
+
+<!-- ============ 导读 ============ -->
+<section id="lede"><div class="wrap">
+  <div class="lede">
+    <p>本文聚焦 2026 云栖大会（9 月 22–24 日，杭州）<strong>产品方向的专业论坛</strong>——「产品经理状元秀：AI 时代，人人都是产品经理」「AI 原生研发组织论坛」「AI Native 组织论坛」「AI 驱动的服务进化」「无影：人与 Agent 共栖的工作空间」等，整理各嘉宾传递的核心思想与阿里巴巴及伙伴企业的真实实践。</p>
+    <p>内容基于大会官方议程与会后官方摘要，并援引第三方公开报道交叉佐证。与《2026 云栖大会 · 设计观察》互为姊妹篇。</p>
+    <p class="note">口径说明：文中效率、提效、规模类数字除注明来源外，均为讲者或企业现场自述口径，多数未披露样本量与统计周期，供参考而非行业基准；产品发布状态以阿里云官方公告为准。</p>
+  </div>
+</div></section>
+
+<!-- ============ 一页速览 ============ -->
+<section id="glance"><div class="wrap">
+  <div class="sec-head">
+    <div class="sec-no">OVERVIEW</div>
+    <h2>一页速览：本届产品方向的 8 个关键信号</h2>
+    <p class="sec-sub">从岗位边界、协作成本到度量与组织，产品方法论正在被系统性重写。</p>
+  </div>
+  <div class="signals">
+    <div class="signal"><span class="no">01</span><h3>执行下沉、判断上浮、边界消融</h3><p>原型、文档等执行性工作被 Agent 接管；问题意识、机会发现与用户洞察等"古典产品能力"反而空前关键。</p><span class="who">苏杰 ·《人人都是产品经理》作者</span></div>
+    <div class="signal"><span class="no">02</span><h3>AI 降低了生产成本，但没有降低共识成本</h3><p>编码只占研发总时长 20–30%；个人提效 ≠ 团队提效。产物化、阶段冻结、验收前置成为新的工程纪律。</p><span class="who">王自宇 · 产品经理状元秀</span></div>
+    <div class="signal"><span class="no">03</span><h3>评测是新的 PRD</h3><p>"Evals are the new PRDs"——用可执行的评测集替代静态需求文档；原型即评审，先上线再看数据。</p><span class="who">Shirley · AI 产品专家</span></div>
+    <div class="signal"><span class="no">04</span><h3>"能力即产品"</h3><p>产品不再是软件+功能界面，而是可被调用的能力；产品定义权正在回到业务手里。</p><span class="who">李平平 · 森马</span></div>
+    <div class="signal"><span class="no">05</span><h3>约 80% 的 PRD 由 AI 生成</h3><p>阿里内部产品设计全链路 AI Native 改造的一手数据：需求判断准确率 90%+、体验报告 4 小时降至 30 分钟。</p><span class="who">钟曜戎 · AI 原生研发组织论坛</span></div>
+    <div class="signal"><span class="no">06</span><h3>组织应围绕 Outcome 重构</h3><p>不是在旧流程上叠加 AI；Context、Data、Evaluation、Feedback 将成为稀缺资产。</p><span class="who">蔡亮 · 阿里云 CTO 线</span></div>
+    <div class="signal"><span class="no">07</span><h3>服务范式重写为"3S"</h3><p>SOLVE 解题力 / SENSE 感知力 / SYNERGY 组织力；红黄绿护栏让"一位专家 × N 个 Agent × N 个工单"可控执行。</p><span class="who">AI 驱动的服务进化</span></div>
+    <div class="signal"><span class="no">08</span><h3>Agent 是需要"工位"的数字同事</h3><p>人从操作者变成指挥者；给 Agent 长期在线、可进内网、可治理的企业级工位，实现"人走本事留下"。</p><span class="who">无影论坛</span></div>
+  </div>
+</div></section>
+
+<!-- ============ 4.1 ============ -->
+<section id="f1"><div class="wrap">
+  <div class="sec-head">
+    <div class="sec-no">FORUM 01 · 9.24</div>
+    <h2>产品经理状元秀：AI 时代，人人都是产品经理</h2>
+    <p class="sec-sub">从大型科技企业、传统企业非产品人、个人与小团队三种处境，检验"人人都是产品经理"这一命题。</p>
+    <div class="forum-tag"><span class="tag">执行下沉</span><span class="tag alt">共识成本</span><span class="tag gray">评测即 PRD</span></div>
+  </div>
+
+  <div class="person"><div class="avatar">苏</div><div class="person-meta"><h3>苏杰</h3><div class="role">杭州良仓投资 产品创新顾问 ·《人人都是产品经理》丛书作者</div></div></div>
+  <div class="body">
+    <p>提出本场总框架：<strong>执行下沉、判断上浮、边界消融</strong>。AI 让"人人都是产品经理"从一种意识变成能落地的行动——个人和小团队可以独立跑通产品闭环，业务方开始自己动手做产品（"最大的竞争对手可能就是甲方"）。珍贵的不再是"产品经理"这个岗位，而是人人可习得的<strong>产品力</strong>。</p>
+  </div>
+  <div class="quote"><p>每个人都变快了，团队却没有变快。</p><div class="q-by">—— <b>苏杰</b>，抛出本场核心问题</div></div>
+
+  <div class="person"><div class="avatar">王</div><div class="person-meta"><h3>王自宇</h3><div class="role">阿里巴巴 MaaS 业务线 产品总监 ·《让 AI 慢下来，让团队快起来》</div></div></div>
+  <div class="body">
+    <p>正面回答了苏杰的问题：<span class="hl">AI 降低的是"生产成本"，而未触及的"共识成本"才是真正瓶颈</span>。写代码约占总时长 20–30%，即便把编码压缩到五分之一，总时长也只从 100 降到 84；共识成本反而变重——评审变慢（一次收到三个 AI 生成的高度相似方案）、返工变多（未写下的业务规则 AI 必漏）、责任变模糊。</p>
+  </div>
+  <div class="diagram">
+    <div class="dg-title">为什么"编码提效 ≠ 交付提效"</div>
+    <div class="dg-sub">编码仅占总时长约 20–30%，压缩编码对总时长的拉动有限</div>
+    <svg viewBox="0 0 720 200" role="img" aria-label="共识成本示意">
+      <g font-family="PingFang SC,sans-serif">
+        <text x="20" y="34" fill="#4a453e" font-size="14" font-weight="600">研发总时长构成（示意）</text>
+        <rect x="20" y="46" width="180" height="40" rx="8" fill="#ff6a00"/>
+        <text x="110" y="71" fill="#fff" font-size="14" font-weight="700" text-anchor="middle">编码 20–30%</text>
+        <rect x="204" y="46" width="420" height="40" rx="8" fill="#e8e2d9"/>
+        <text x="414" y="71" fill="#4a453e" font-size="14" font-weight="700" text-anchor="middle">共识 / 评审 / 返工 / 对齐 ≈70%</text>
+        <text x="20" y="122" fill="#4a453e" font-size="14" font-weight="600">即便把编码压缩到 1/5：</text>
+        <rect x="20" y="134" width="36" height="34" rx="8" fill="#ff9a4d"/>
+        <text x="66" y="156" fill="#7a746b" font-size="13">编码 100→20 中的 20→4</text>
+        <rect x="250" y="134" width="300" height="34" rx="8" fill="#e8e2d9"/>
+        <text x="400" y="156" fill="#4a453e" font-size="13" font-weight="600" text-anchor="middle">共识成本"一个环节都没少"</text>
+        <text x="566" y="156" fill="#d45500" font-size="15" font-weight="800">总时长 100→84</text>
+      </g>
+    </svg>
+  </div>
+  <div class="cards">
+    <div class="card"><h4><span class="dot"></span>① 每阶段以产物结束</h4><p>PRD.md / spec.md / 代码+测试 / 验证报告 / 部署记录，产物进版本库留痕。</p></div>
+    <div class="card t"><h4><span class="dot"></span>② 设"冻结"点与评审卡点</h4><p>PD / SE / BE·FE / Code Review / QA Sign-off 各阶段人工卡点。</p></div>
+    <div class="card"><h4><span class="dot"></span>③ 验收标准前置</h4><p>写成可执行约束（如购物车 51 件含下架商品的黄色提示条）。</p></div>
+    <div class="card t"><h4><span class="dot"></span>④ 人机分工</h4><p>人负责判断决策，AI 负责生成与验证。</p></div>
+  </div>
+  <div class="quote light"><p>能被 AI 执行的表达才是有效表达。先冻结再放手，验收标准必须前置。</p><div class="q-by">—— <b>王自宇</b>，引 Anthropic《The AI-Native SDLC Playbook》"Code is no longer the bottleneck"</div></div>
+
+  <div class="person"><div class="avatar t">S</div><div class="person-meta"><h3>Shirley</h3><div class="role">AI 产品经理（华为 / Lovart）· 哈佛设计学院双学位 ·《AI 产品经理如何构建判断力》</div></div></div>
+  <div class="body">
+    <p>提出：<strong>当生产力不再是瓶颈，判断力（taste）就是一切</strong>。AI 把生产力放大约 10 倍的同时选择也放大约 10 倍，"决定做什么"成为新瓶颈。她给出沿"什么值得做—做到什么程度可上线—上线后改什么"三段构建判断力的可操作路径。</p>
+  </div>
+  <div class="diagram">
+    <div class="dg-title">构建判断力的三段式路径</div>
+    <div class="dg-sub">判断力靠"亲手做、认真判断、看结果、再修正标准"逐轮积累</div>
+    <svg viewBox="0 0 720 170" role="img" aria-label="判断力三段式">
+      <g font-family="PingFang SC,sans-serif">
+        <rect x="20"  y="26" width="200" height="118" rx="14" fill="#fff1e6" stroke="#ff6a00" stroke-width="1.5"/>
+        <text x="120" y="56" fill="#d45500" font-size="16" font-weight="800" text-anchor="middle">什么值得做</text>
+        <text x="120" y="84" fill="#4a453e" font-size="13" font-weight="700" text-anchor="middle">原型即评审</text>
+        <text x="120" y="106" fill="#7a746b" font-size="11.5" text-anchor="middle">用能体验的东西</text>
+        <text x="120" y="124" fill="#7a746b" font-size="11.5" text-anchor="middle">把讨论落到具体行为</text>
+        <path d="M228 85 h34 m-8 -7 l8 7 l-8 7" stroke="#ff6a00" stroke-width="2.5" fill="none"/>
+        <rect x="262" y="26" width="200" height="118" rx="14" fill="#e6f4f3" stroke="#0e7c7b" stroke-width="1.5"/>
+        <text x="362" y="56" fill="#0e7c7b" font-size="16" font-weight="800" text-anchor="middle">做到什么程度可上线</text>
+        <text x="362" y="84" fill="#4a453e" font-size="13" font-weight="700" text-anchor="middle">评测是新的 PRD</text>
+        <text x="362" y="106" fill="#7a746b" font-size="11.5" text-anchor="middle">拆维度/黄金集/人机校准</text>
+        <text x="362" y="124" fill="#7a746b" font-size="11.5" text-anchor="middle">扩覆盖/归类迭代</text>
+        <path d="M470 85 h34 m-8 -7 l8 7 l-8 7" stroke="#0e7c7b" stroke-width="2.5" fill="none"/>
+        <rect x="504" y="26" width="200" height="118" rx="14" fill="#141210"/>
+        <text x="604" y="56" fill="#ff9a4d" font-size="16" font-weight="800" text-anchor="middle">上线后改什么</text>
+        <text x="604" y="84" fill="#e8e2da" font-size="13" font-weight="700" text-anchor="middle">迭代后置</text>
+        <text x="604" y="106" fill="#b8b0a6" font-size="11.5" text-anchor="middle">ship first, data follows</text>
+        <text x="604" y="124" fill="#b8b0a6" font-size="11.5" text-anchor="middle">看数据修正标准</text>
+      </g>
+    </svg>
+  </div>
+  <div class="quote"><p>当生产力不再是瓶颈，判断力就是一切。现在"不做什么"才是每天要回答的命题。</p><div class="q-by">—— <b>Shirley</b>，taste is everything</div></div>
+
+  <div class="person"><div class="avatar t">李</div><div class="person-meta"><h3>李平平</h3><div class="role">森马股份 产品专家 ·《AI 时代，如何借助 Agent 做产品》</div></div></div>
+  <div class="body">
+    <p>展示了传统零售企业的 Agent 产品实践，提出<strong>"能力即产品"</strong>：产品不再是软件+功能界面，而是可被调用的能力。通过三种真实形态让业务专家、产品经理、开发共建共创，沿"效率替代 → 流程重构 → 决策增强"逐级跃迁。</p>
+  </div>
+  <div class="cards">
+    <div class="card"><h4><span class="dot"></span>形态一 · 最小闭环</h4><p>产品经理+开发工程师两人成团，借千问办公 Agent 交付集团级"全域目标管理系统"，支持年/季/月/周/日多层与 4 类目标、多品牌配置接入。</p></div>
+    <div class="card t"><h4><span class="dot"></span>形态二 · 岗位工作台</h4><p>沿"货→场→账"主链路搭建；以内容电商工作台 7 大模块+浏览器插件为例，直播智控按 PDCA（前/中/后/优化）闭环。</p></div>
+    <div class="card"><h4><span class="dot"></span>形态三 · 对话即分析</h4><p>"森小智"智能分析搭档：智能问数 / 异常归因 / 一键出报告 / 趋势预测 / 给建议 / 技能沉淀；每季 ≥3 个场景沉淀上森小智。</p></div>
+  </div>
+  <div class="stats">
+    <div class="stat"><div class="v">5–7<small> 天</small>→2<small> 小时</small></div><div class="k">集团级目标汇总</div></div>
+    <div class="stat teal"><div class="v">0→100%</div><div class="k">口径一致性</div></div>
+    <div class="stat"><div class="v">3–6<small> 月</small>→1.5<small> 月</small></div><div class="k">整体交付周期</div></div>
+  </div>
+  <p style="font-size:12.5px;color:var(--ink-3);margin-top:-8px">森马"全域目标管理系统"实践数据（企业自述口径）</p>
+</div></section>
+
+<!-- ============ 4.2 ============ -->
+<section id="f2"><div class="wrap">
+  <div class="sec-head">
+    <div class="sec-no">FORUM 02 · 9.23</div>
+    <h2>AI 原生研发组织论坛：产品与研发的全链路改造</h2>
+    <p class="sec-sub">以阿里云多个真实业务为样本，展示 AI 原生研发从局部编码提效迈向端到端组织重构；其中产品设计、产品运营环节的一手数据最具参考价值。</p>
+    <div class="forum-tag"><span class="tag">80% PRD 由 AI 生成</span><span class="tag alt">Agent 数字人团队</span><span class="tag gray">Outcome 重构</span></div>
+  </div>
+
+  <figure class="fig">
+    <img src="product-team.jpg" alt="人指挥 Agent 团队">
+    <figcaption>组织意象：真人负责目标、决策与最终验收，Leader Agent 拆解分派，Worker Agent 贯通执行。</figcaption>
+  </figure>
+
+  <div class="person"><div class="avatar">钟</div><div class="person-meta"><h3>钟曜戎</h3><div class="role">阿里云智能集团产品管理部 项目管理总监 ·《产品设计进化：人智协同全链路》</div></div></div>
+  <div class="body">
+    <p>披露了产品设计环节的一手数据：AI 贯穿需求、洞察、表现分析、设计、发布运营和知识管理全链路；分工原则为 <strong>AI 负责处理与执行，人负责价值判断</strong>，产出同步沉淀为知识底座。体验测评要求跑通模块 ≥5、截图 ≥15。</p>
+  </div>
+  <div class="stats">
+    <div class="stat"><div class="v">90%+</div><div class="k">需求价值判断准确率</div></div>
+    <div class="stat teal"><div class="v">-45%</div><div class="k">响应时长下降</div></div>
+    <div class="stat"><div class="v">+50%</div><div class="k">积压处理效率提升</div></div>
+    <div class="stat teal"><div class="v">2/3</div><div class="k">需求无需人亲自看</div></div>
+    <div class="stat"><div class="v">≈80%</div><div class="k">PRD 由 AI 生成</div></div>
+    <div class="stat teal"><div class="v">4h→30min</div><div class="k">单份体验测评报告</div></div>
+  </div>
+  <p style="font-size:12.5px;color:var(--ink-3);margin-top:-8px">阿里云产品设计全链路 AI Native 实践（企业自述口径，未说明样本量与统计周期）</p>
+
+  <div class="person"><div class="avatar t">王</div><div class="person-meta"><h3>王希正</h3><div class="role">阿里云智能集团 高级产品运营专家 ·《产品运营进化：Agent 数字人团队》</div></div></div>
+  <div class="body">
+    <p>以 <strong>Leader Agent</strong> 拆解、分派和验收，多个 <strong>Worker Agent</strong> 贯通知识、选题、创作、流量、商机和经营分析；真人负责目标、决策与最终验收。团队由 2 名自然人、1 个 Leader、6 个 Agent 组成，运行 4 条主要管线、覆盖 100+ 协作人员。</p>
+  </div>
+  <div class="stats">
+    <div class="stat"><div class="v">2+1+6</div><div class="k">自然人 + Leader + Worker Agent</div></div>
+    <div class="stat teal"><div class="v">100+</div><div class="k">覆盖协作人员</div></div>
+    <div class="stat"><div class="v">10<small> 倍</small></div><div class="k">宣称全流程提效</div></div>
+    <div class="stat teal"><div class="v">数月→1<small> 周</small></div><div class="k">完整 Campaign 周期</div></div>
+  </div>
+  <p style="font-size:12.5px;color:var(--ink-3);margin-top:-8px">Agent 数字人团队运行数据（企业自述口径）</p>
+
+  <div class="person"><div class="avatar">蔡</div><div class="person-meta"><h3>蔡亮</h3><div class="role">阿里云智能集团 CTO 线 组织发展负责人 · 全景分享</div></div></div>
+  <div class="body">
+    <p>给出组织层面的核心判断：AI 使智能规模化、降低认知与执行成本，<span class="hl">组织应围绕 Outcome 重构，而不是在旧流程上叠加 AI</span>；Context、Data、Evaluation、Feedback 将成为稀缺资产。其"10x 样板间"开展 3 个月持续实验、覆盖 7 项实践，主张以最终价值全局求解，而非各节点分别提效。</p>
+  </div>
+  <div class="quote light"><p>以北极星指标和过程指标建立实验闭环，推动工具、流程、人机协作及组织持续升级。</p><div class="q-by">—— <b>蔡亮</b>，10x、20%、30% 为目标或反例表达，非实测增益</div></div>
+
+  <div class="cards">
+    <div class="card"><h4><span class="dot"></span>研发侧呼应 · 代码审查</h4><p>周远航：Kitta 代码审查智能体由通用审查沉淀为领域专家；龙蜥社区代码合入率 62%、门禁准确率 97%（自述口径）。AI 发现风险、提供证据，Maintainer 保留最终决策权。</p></div>
+    <div class="card t"><h4><span class="dot"></span>研发侧呼应 · 数字分身</h4><p>赵斌：云通信以统一契约、可插拔 Skill 和质量门禁串联全流程 Agent，用"数字分身"复用人的权限、绑定责任；简单需求端到端交付率 66.7%（自述口径）。</p></div>
+    <div class="card"><h4><span class="dot"></span>研发侧呼应 · 自动修复</h4><p>盛涛涛：PolarDB-X 的 Loop 工程让 Agent 从报警/工单出发自主复现—修复—回归—提交 CR；半年内从上万次报警识别 200+ 缺陷、70%+ 可稳定复现（自述口径）。</p></div>
+  </div>
+</div></section>
+
+<!-- ============ 4.3 ============ -->
+<section id="f3"><div class="wrap">
+  <div class="sec-head">
+    <div class="sec-no">FORUM 03 · 9.22–23</div>
+    <h2>组织与服务：产品转型的真正土壤</h2>
+    <p class="sec-sub">AI Native 不由工具定义，而取决于组织能否围绕结果重构流程、角色与度量；服务范式也随之重写。</p>
+    <div class="forum-tag"><span class="tag">AI Native 组织</span><span class="tag alt">3S 服务范式</span><span class="tag gray">Agent 数字同事</span></div>
+  </div>
+
+  <div class="person"><div class="avatar">蒋</div><div class="person-meta"><h3>蒋芳 / 蒋林泉</h3><div class="role">阿里巴巴首席人才官（开场）/ 阿里云 CIO · AI Native 组织论坛</div></div></div>
+  <div class="body">
+    <p>传递的核心判断是：AI 的浪潮正从工具革命走向组织重构——业务系统被 AI 重写之后，组织也必须重写自己。蒋林泉特别提醒：<span class="hl">生码率提升不等于交付提效</span>，须靠岗位归并、验证左移、概念治理与受治理的系统开放来突破组织瓶颈。HR 侧提出"每个组织就是一个大模型"：以大模型六大机制映射组织六要素，以效率为第一性原理重构组织。</p>
+  </div>
+
+  <div class="person"><div class="avatar t">服</div><div class="person-meta"><h3>AI 驱动的服务进化论坛</h3><div class="role">阿里云客户服务与体验部 · "3S" 服务新范式</div></div></div>
+  <div class="diagram">
+    <div class="dg-title">"3S" 服务新范式</div>
+    <div class="dg-sub">解题力 — 感知力 — 组织力的三重重塑</div>
+    <svg viewBox="0 0 720 150" role="img" aria-label="3S 范式">
+      <g font-family="PingFang SC,sans-serif">
+        <rect x="16"  y="26" width="216" height="98" rx="14" fill="#fff1e6" stroke="#ff6a00" stroke-width="1.5"/>
+        <text x="124" y="58" fill="#d45500" font-size="18" font-weight="800" text-anchor="middle">SOLVE</text>
+        <text x="124" y="82" fill="#4a453e" font-size="13.5" font-weight="700" text-anchor="middle">重塑解题力</text>
+        <text x="124" y="104" fill="#7a746b" font-size="11.5" text-anchor="middle">专家×N Agent×N 工单可控执行</text>
+        <rect x="252" y="26" width="216" height="98" rx="14" fill="#e6f4f3" stroke="#0e7c7b" stroke-width="1.5"/>
+        <text x="360" y="58" fill="#0e7c7b" font-size="18" font-weight="800" text-anchor="middle">SENSE</text>
+        <text x="360" y="82" fill="#4a453e" font-size="13.5" font-weight="700" text-anchor="middle">重塑感知力</text>
+        <text x="360" y="104" fill="#7a746b" font-size="11.5" text-anchor="middle">客户声音可信归因→研发任务</text>
+        <rect x="488" y="26" width="216" height="98" rx="14" fill="#141210"/>
+        <text x="596" y="58" fill="#ff9a4d" font-size="18" font-weight="800" text-anchor="middle">SYNERGY</text>
+        <text x="596" y="82" fill="#e8e2da" font-size="13.5" font-weight="700" text-anchor="middle">重塑组织力</text>
+        <text x="596" y="104" fill="#b8b0a6" font-size="11.5" text-anchor="middle">洞察到研发的闭环</text>
+      </g>
+    </svg>
+  </div>
+  <div class="body">
+    <p>机制亮点：红黄绿安全护栏把每轮 Agent 动作按风险动态分流，使"一位专家 × N 个 Agent × N 个工单"可控执行；客户声音经可信归因直接形成带验收标准的研发任务，构成从洞察到研发的闭环。反复被强调的原则是：<strong>AI 不替代人的最终判断</strong>——专家负责高风险处置、准入决策和结果担责；Agent 承接标准化执行、保留上下文、并行协同和持续学习。</p>
+  </div>
+  <div class="stats">
+    <div class="stat"><div class="v">1<small> 周</small>→小时级</div><div class="k">淘天 AI 店小蜜 Skill 调优</div></div>
+    <div class="stat teal"><div class="v">+1.1–1.2<small> pp</small></div><div class="k">询单转化率提升</div></div>
+  </div>
+  <p style="font-size:12.5px;color:var(--ink-3);margin-top:-8px">服务进化论坛披露数据（企业自述口径）</p>
+
+  <div class="person"><div class="avatar">无</div><div class="person-meta"><h3>无影论坛</h3><div class="role">人与 Agent 共栖的工作空间</div></div></div>
+  <div class="body">
+    <p>提出一个形象的组织隐喻：Agentic 时代，人从操作者变成指挥者，<strong>Agent 从工具变成需要"工位、身份与权限"的数字同事</strong>——给 Agent 一个长期在线、可进内网、可治理的企业级工位，让个人经验沉淀为组织可复用的技能、知识与记忆。</p>
+  </div>
+  <div class="quote"><p>给 Agent 一个可治理的企业级工位，实现"人走本事留下"。</p><div class="q-by">—— 无影论坛，组织隐喻</div></div>
+</div></section>
+
+<!-- ============ 启示 ============ -->
+<section id="take"><div class="wrap">
+  <div class="sec-head">
+    <div class="sec-no">TAKEAWAYS</div>
+    <h2>给产品团队负责人的 5 条启示</h2>
+    <p class="sec-sub">综合本届产品方向各论坛的思想与案例，对正在推进 AI 转型的产品组织可操作的落点。</p>
+  </div>
+  <div class="take">
+    <div class="take-item"><h4>先治共识成本，再谈团队提效</h4><p>个人提效 ≠ 团队提效。建立产物化（每阶段以可版本化的产物结束）、冻结点（阶段间人工评审卡点）、验收前置（可执行约束）的工程纪律。警惕三个 AI 时代的新评审陷阱：相似方案泛滥、隐性规则遗漏、责任模糊。</p></div>
+    <div class="take-item"><h4>把判断力作为团队核心能力建设</h4><p>生产力被放大 10 倍后，"决定做什么"成为新瓶颈。用"原型即评审"替代长文档评审，用评测集替代静态 PRD，先上线小版本再看数据修正标准——判断力靠逐轮"亲手做、认真判断、看结果、再修正"积累。</p></div>
+    <div class="take-item"><h4>把"能力"而非"界面"作为产品单元</h4><p>参照森马"最小闭环 / 岗位工作台 / 对话即分析"三形态：从真实业务卡点起步跑通最小闭环，再沿主链路扩展为岗位工作台，最终把分析能力对话化。让产品定义权回到业务手里，产品团队转为共建者与把关者。</p></div>
+    <div class="take-item"><h4>人机分工要量化、要有护栏</h4><p>规则明确的重复执行（问数、归因、初稿、测评、适配）大胆交给 Agent；意图定义、价值取舍、准入决策和结果责任留给人。对 Agent 的自主权扩张，先明确授权边界、审批链路与越界熔断规则（参照红黄绿护栏）。</p></div>
+    <div class="take-item"><h4>转型的单位是组织，不是工具</h4><p>围绕 Outcome 重构流程与角色，把 Context、Data、Evaluation、Feedback 当作稀缺资产来积累；让高手的经验版本化为组织级 Skill，实现"人走本事留下"。不要从"全能 Agent"起步，而要从真实业务卡点逐个串联。</p></div>
+  </div>
+</div></section>
+
+<!-- ============ 附录 ============ -->
+<section id="app"><div class="wrap">
+  <div class="sec-head">
+    <div class="sec-no">APPENDIX</div>
+    <h2>附录：产品相关论坛与资料来源</h2>
+  </div>
+  <table>
+    <thead><tr><th style="width:34%">论坛</th><th style="width:12%">时间</th><th>核心命题</th></tr></thead>
+    <tbody>
+      <tr><td>产品经理状元秀</td><td>9.24</td><td>执行下沉、判断上浮、边界消融；共识成本；评测是新 PRD</td></tr>
+      <tr><td>AI 原生研发组织论坛</td><td>9.23</td><td>产品设计进化（约 80% PRD 由 AI 生成）；数字分身；Agent 运营团队</td></tr>
+      <tr><td>AI Native 组织论坛</td><td>9.22</td><td>从工具革命到组织重构；围绕 Outcome 重构</td></tr>
+      <tr><td>AI 驱动的服务进化</td><td>9.22</td><td>解题力—感知力—组织力"3S"服务新范式</td></tr>
+      <tr><td>无影：人与 Agent 共栖的工作空间</td><td>9.23</td><td>给 Agent 一个可治理的"企业级工位"</td></tr>
+      <tr><td>Qoder 助力 AI Native 超级组织</td><td>9.22</td><td>Agentic Coding 的企业级落地（满帮、海信、联想等实践）</td></tr>
+    </tbody>
+  </table>
+
+  <div class="cards" style="margin-top:26px">
+    <div class="card"><h4><span class="dot"></span>官方来源</h4><ul><li>2026 云栖大会官网（议程/直播/嘉宾）yunqi.aliyun.com</li><li>大会官方议程数据与会后官方摘要材料</li></ul></div>
+    <div class="card t"><h4><span class="dot"></span>第三方报道</h4><ul><li>同花顺《AI 时代人人都是产品经理？这场"状元秀"有新方向》</li><li>证券时报《2026 云栖大会观察：AI 从"能生成"走向"能交付"》</li><li>腾讯新闻、DoNews 等大会综合报道</li></ul></div>
+    <div class="card"><h4><span class="dot"></span>姊妹篇</h4><ul><li>《2026 云栖大会 · 设计观察》：设计方向专业论坛的完整整理</li></ul></div>
+  </div>
+</div></section>
+
+<footer class="foot"><div class="wrap">
+  <h4>口径说明</h4>
+  <p>文中所有效率提升、转化率、规模类数字（如约 80% PRD 由 AI 生成、全流程提效 10 倍、森马交付周期缩短等）均为演讲者或企业现场自述口径，多数未披露样本量、统计周期与测算方法，请勿直接作为行业基准引用；产品发布状态以阿里云官方公告为准。</p>
+  <p class="src">本文基于大会官方议程与会后官方摘要整理，并援引第三方公开报道交叉佐证。配套文档：《2026 云栖大会 · 设计观察》。</p>
+  <p class="fine">整理日期：2026 年 10 月 · 仅供产品设计团队内部学习与交流参考</p>
+</div></footer>
+
+<script>
+var links=document.querySelectorAll('.nav a');
+var secs=[];links.forEach(function(a){var t=document.querySelector(a.getAttribute('href'));if(t)secs.push([a,t]);});
+function onScroll(){var y=window.scrollY+120;var cur=secs[0];secs.forEach(function(p){if(p[1].offsetTop<=y)cur=p;});links.forEach(function(a){a.classList.toggle('on',a===cur[0]);});}
+window.addEventListener('scroll',onScroll,{passive:true});onScroll();
+</script>
+</body>
+</html>
