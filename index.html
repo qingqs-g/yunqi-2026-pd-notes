@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>2026 云栖大会 · 产品与设计观察</title>
+<meta name="description" content="2026 云栖大会专业论坛现场观察：产品与设计两条主线的嘉宾核心思想与阿里巴巴内部实践。图文并茂，可公开分享。">
+<style>
+:root{
+  --orange:#ff6a00; --orange-soft:#fff1e6; --orange-deep:#d45500;
+  --teal:#0e7c7b; --teal-soft:#e6f4f3;
+  --ink:#1c1a17; --ink-2:#4a453e; --ink-3:#7a746b;
+  --paper:#faf8f5; --card:#ffffff; --line:#e8e2d9;
+  --dark:#141210; --dark-2:#221e1a;
+  --radius:16px;
+  --shadow:0 2px 6px rgba(28,26,23,.05),0 12px 32px rgba(28,26,23,.07);
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  font-family:"PingFang SC","Hiragino Sans GB","Microsoft YaHei",-apple-system,sans-serif;
+  background:var(--paper); color:var(--ink); line-height:1.85; font-size:16px;
+  -webkit-font-smoothing:antialiased;
+}
+.wrap{max-width:1000px;margin:0 auto;padding:0 24px}
+a{color:inherit}
+
+/* ---------- HERO ---------- */
+.hero{position:relative;color:#fff;overflow:hidden;background:var(--dark)}
+.hero::before{content:"";position:absolute;width:640px;height:640px;border-radius:50%;
+  background:radial-gradient(circle,rgba(255,106,0,.34),transparent 62%);top:-260px;right:-160px}
+.hero::after{content:"";position:absolute;width:560px;height:560px;border-radius:50%;
+  background:radial-gradient(circle,rgba(14,124,123,.30),transparent 64%);bottom:-300px;left:-160px}
+.hero-inner{position:relative;z-index:2;padding:88px 24px 64px;max-width:1000px;margin:0 auto}
+.kicker{display:inline-flex;align-items:center;gap:9px;font-size:12.5px;letter-spacing:.2em;
+  text-transform:uppercase;color:#ffb27a;font-weight:700;margin-bottom:22px}
+.kicker::before{content:"";width:30px;height:2px;background:var(--orange)}
+.hero h1{font-size:clamp(32px,5.6vw,56px);line-height:1.18;font-weight:800;letter-spacing:.01em;margin-bottom:18px}
+.hero h1 em{font-style:normal;color:var(--orange)}
+.hero h1 .t{color:#5fc9c2}
+.hero-sub{font-size:clamp(15.5px,2.2vw,19px);color:#e8e2da;font-weight:400;max-width:680px;margin-bottom:30px}
+.hero-meta{display:flex;flex-wrap:wrap;gap:10px}
+.chip{display:inline-flex;align-items:center;gap:6px;padding:7px 14px;border:1px solid rgba(255,255,255,.26);
+  border-radius:999px;font-size:13px;color:#f0eae2;background:rgba(255,255,255,.07);backdrop-filter:blur(6px)}
+.chip b{color:var(--orange);font-weight:700}
+
+/* ---------- SECTION ---------- */
+section{padding:56px 0}
+.sec-head{margin-bottom:30px}
+.sec-no{font-size:12.5px;font-weight:800;letter-spacing:.2em;color:var(--orange);margin-bottom:8px}
+.sec-head h2{font-size:clamp(22px,3.4vw,30px);font-weight:800;line-height:1.35}
+.sec-head .sec-sub{margin-top:10px;color:var(--ink-3);font-size:15px;max-width:760px}
+
+/* ---------- DOC GRID ---------- */
+.doc-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:22px}
+.doc{background:var(--card);border:1px solid var(--line);border-radius:20px;overflow:hidden;
+  box-shadow:var(--shadow);display:flex;flex-direction:column;text-decoration:none;
+  transition:transform .2s ease,box-shadow .2s ease}
+.doc:hover{transform:translateY(-5px);box-shadow:0 10px 22px rgba(28,26,23,.1),0 26px 56px rgba(28,26,23,.13)}
+.doc-cover{position:relative;aspect-ratio:16/9;overflow:hidden;background:var(--dark)}
+.doc-cover img{width:100%;height:100%;object-fit:cover;display:block;transition:transform .5s ease}
+.doc:hover .doc-cover img{transform:scale(1.05)}
+.doc-badge{position:absolute;top:14px;left:14px;z-index:2;padding:6px 13px;border-radius:999px;
+  font-size:12.5px;font-weight:800;letter-spacing:.06em;color:#fff;background:var(--orange);
+  box-shadow:0 4px 14px rgba(255,106,0,.4)}
+.doc.teal .doc-badge{background:var(--teal);box-shadow:0 4px 14px rgba(14,124,123,.4)}
+.doc-cover::after{content:"";position:absolute;inset:0;
+  background:linear-gradient(180deg,rgba(20,18,16,0) 40%,rgba(20,18,16,.5) 100%)}
+.doc-body{padding:24px 24px 26px;display:flex;flex-direction:column;flex:1}
+.doc-body h3{font-size:clamp(20px,2.6vw,24px);font-weight:800;line-height:1.4;margin-bottom:10px}
+.doc.teal .doc-body h3 em{font-style:normal;color:var(--teal)}
+.doc-body h3 em{font-style:normal;color:var(--orange)}
+.doc-body .desc{font-size:14.5px;color:var(--ink-2);margin-bottom:16px}
+.topics{list-style:none;display:flex;flex-wrap:wrap;gap:8px;margin-bottom:20px}
+.topics li{font-size:12.5px;padding:5px 11px;border-radius:7px;background:var(--orange-soft);
+  color:var(--orange-deep);font-weight:600}
+.doc.teal .topics li{background:var(--teal-soft);color:var(--teal)}
+.doc-cta{margin-top:auto;display:inline-flex;align-items:center;gap:8px;font-size:15px;font-weight:700;
+  color:var(--orange)}
+.doc.teal .doc-cta{color:var(--teal)}
+.doc-cta .arrow{transition:transform .2s ease}
+.doc:hover .doc-cta .arrow{transform:translateX(5px)}
+
+/* ---------- HOWTO ---------- */
+.howto{background:var(--card);border:1px solid var(--line);border-left:4px solid var(--teal);
+  border-radius:var(--radius);padding:24px 26px;box-shadow:var(--shadow)}
+.howto h4{font-size:16px;font-weight:800;margin-bottom:12px;display:flex;align-items:center;gap:9px}
+.howto h4 .dot{width:9px;height:9px;border-radius:50%;background:var(--teal)}
+.howto ol{padding-left:20px;color:var(--ink-2);font-size:14.5px}
+.howto li{margin-bottom:7px}
+.howto li b{color:var(--ink)}
+
+/* ---------- FOOTER ---------- */
+.foot{background:var(--dark);color:#b8b0a6;padding:34px 0;margin-top:8px}
+.foot .wrap{font-size:13px;line-height:1.9}
+.foot b{color:#f0eae2}
+.foot .sep{color:var(--orange)}
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="hero-inner">
+    <div class="kicker">Yunqi 2026 · Field Notes</div>
+    <h1>2026 云栖大会<br><em>产品</em> 与 <span class="t">设计</span> 双线观察</h1>
+    <p class="hero-sub">聚焦专业论坛，提炼产品与设计两条主线上嘉宾的核心思想，以及阿里巴巴内部正在发生的真实实践。图文并茂，可直接在微信中打开阅读与分享。</p>
+    <div class="hero-meta">
+      <span class="chip">📍 杭州 · <b>9/22–24</b></span>
+      <span class="chip">🎯 只取<b>专业论坛</b></span>
+      <span class="chip">🧩 产品 <b>×</b> 设计</span>
+      <span class="chip">🖼 图文并茂 · <b>可外发</b></span>
+    </div>
+  </div>
+</header>
+
+<main>
+  <section>
+    <div class="wrap">
+      <div class="sec-head">
+        <div class="sec-no">TWO TRACKS</div>
+        <h2>两条主线，各自独立成篇</h2>
+        <p class="sec-sub">产品与设计在本届云栖呈现出相对独立又彼此呼应的议题。下面两篇可分别打开、分别转发，互不依赖。</p>
+      </div>
+
+      <div class="doc-grid">
+
+        <a class="doc" href="design.html">
+          <div class="doc-cover">
+            <span class="doc-badge">设计篇</span>
+            <img src="design-hero.jpg" alt="设计篇封面插图">
+          </div>
+          <div class="doc-body">
+            <h3>从"做界面"到<em>"编译意图"</em></h3>
+            <p class="desc">当 AI 能直接生成界面，设计师的价值从画图上移到定义约束、品味与评测。四场专业论坛串起设计能力栈的重建。</p>
+            <ul class="topics">
+              <li>Design to Build · 五层能力栈</li>
+              <li>Go Vibe Designing</li>
+              <li>Agentic 设计工作坊</li>
+              <li>设计生态共建</li>
+            </ul>
+            <span class="doc-cta">阅读设计篇 <span class="arrow">→</span></span>
+          </div>
+        </a>
+
+        <a class="doc teal" href="product.html">
+          <div class="doc-cover">
+            <span class="doc-badge">产品篇</span>
+            <img src="product-hero.jpg" alt="产品篇封面插图">
+          </div>
+          <div class="doc-body">
+            <h3>执行下沉，<em>判断上浮</em></h3>
+            <p class="desc">AI 把执行成本压到极低，产品经理的重心转向判断、共识与治理。从状元秀到 AI 原生研发组织的一线实践。</p>
+            <ul class="topics">
+              <li>产品经理状元秀</li>
+              <li>AI 原生研发组织</li>
+              <li>组织与服务重构</li>
+              <li>共识成本 · 判断力</li>
+            </ul>
+            <span class="doc-cta">阅读产品篇 <span class="arrow">→</span></span>
+          </div>
+        </a>
+
+      </div>
+    </div>
+  </section>
+
+  <section style="padding-top:0">
+    <div class="wrap">
+      <div class="howto">
+        <h4><span class="dot"></span>怎么读最顺手</h4>
+        <ol>
+          <li>本页面是<b>导航入口</b>，点上面任意一张卡片即可进入对应篇章；两篇也可单独转发。</li>
+          <li>建议在<b>手机微信中直接点开链接</b>阅读——页面已针对移动端排版，比 PDF 更清晰、无需下载。</li>
+          <li>每篇均为<b>自包含页面</b>（插图已内嵌），打开即完整呈现，不依赖其它文件。</li>
+        </ol>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="foot">
+  <div class="wrap">
+    <b>2026 云栖大会 · 产品与设计观察</b> <span class="sep">|</span> 现场整理，供产品设计团队参考交流。<br>
+    文中效率与规模数字多为嘉宾<b>自述口径</b>，非独立审计结果；观点归属各演讲嘉宾，不代表主办方立场。
+  </div>
+</footer>
+
+</body>
+</html>
